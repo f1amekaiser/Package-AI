@@ -1,0 +1,199 @@
+# Package Damage Detection System - Main Configuration
+
+# =============================================================================
+# SYSTEM IDENTIFICATION
+# =============================================================================
+system:
+  name: "Package Damage Detector"
+  version: "1.0.0"
+  station_id: "DOCK-A-01"
+  timezone: "Asia/Kolkata"
+
+# =============================================================================
+# MODEL CONFIGURATION
+# =============================================================================
+model:
+  # Path to trained weights (relative to project root)
+  weights_path: "models/damage_detector.pt"
+  
+  # TensorRT engine path (for optimized inference)
+  tensorrt_engine: "models/damage_detector.engine"
+  
+  # Inference settings
+  input_size: 640
+  confidence_threshold: 0.25
+  iou_threshold: 0.45
+  max_detections: 100
+  
+  # Device settings
+  device: "0"  # GPU device ID, or "cpu"
+  half_precision: true  # Use FP16 for faster inference
+
+# =============================================================================
+# CAMERA CONFIGURATION
+# =============================================================================
+cameras:
+  # Number of cameras in the array
+  count: 5
+  
+  # Camera definitions
+  devices:
+    - id: "CAM-01-TOP"
+      position: "top"
+      source: 0  # Device index or IP address
+      resolution: [2592, 1944]
+      fps: 30
+      
+    - id: "CAM-02-FRONT"
+      position: "front"
+      source: 1
+      resolution: [2592, 1944]
+      fps: 30
+      
+    - id: "CAM-03-LEFT"
+      position: "left"
+      source: 2
+      resolution: [2592, 1944]
+      fps: 30
+      
+    - id: "CAM-04-RIGHT"
+      position: "right"
+      source: 3
+      resolution: [2592, 1944]
+      fps: 30
+      
+    - id: "CAM-05-BACK"
+      position: "back"
+      source: 4
+      resolution: [2592, 1944]
+      fps: 30
+  
+  # Capture settings
+  capture:
+    trigger_mode: "sensor"  # "sensor", "software", "continuous"
+    sync_timeout_ms: 100
+    buffer_size: 3
+
+# =============================================================================
+# DECISION ENGINE CONFIGURATION
+# =============================================================================
+decision:
+  # Class severity weights (base severity per class)
+  class_weights:
+    structural_deformation: 2
+    surface_breach: 4
+    contamination_stain: 3
+    compression_damage: 3
+    tape_seal_damage: 4
+  
+  # Size factor thresholds (detection area / image area)
+  size_thresholds:
+    large: 0.15    # factor = 2.0
+    medium: 0.05   # factor = 1.5
+    small: 0.02    # factor = 1.0
+    tiny: 0.0      # factor = 0.5
+  
+  # Confidence factor thresholds
+  confidence_thresholds:
+    high: 0.85     # factor = 1.2
+    good: 0.70     # factor = 1.0
+    moderate: 0.50 # factor = 0.8
+    low: 0.0       # factor = 0.5
+  
+  # Severity score thresholds
+  severity_thresholds:
+    severe: 6.0
+    moderate: 3.0
+    # Below moderate = minor
+  
+  # Decision rules
+  rules:
+    # Auto-reject if any detection is SEVERE
+    auto_reject_on_severe: true
+    
+    # Require review if multiple MINOR damages
+    review_on_multiple_minor: 3
+    
+    # Operator timeout (seconds) - defaults to REJECT
+    operator_timeout: 30
+  
+  # Multi-camera fusion
+  fusion:
+    # Confirmation threshold for uncertain detections
+    corroboration_threshold: 0.40
+    
+    # Minimum confidence to confirm without corroboration
+    standalone_threshold: 0.70
+
+# =============================================================================
+# EVIDENCE STORAGE CONFIGURATION
+# =============================================================================
+evidence:
+  # Local storage path
+  storage_path: "evidence"
+  
+  # Image settings
+  image_quality: 95  # JPEG quality (1-100)
+  save_annotated: true
+  save_composite: true
+  
+  # Retention policy (days)
+  local_retention_days: 14
+  
+  # Hash algorithm
+  hash_algorithm: "sha256"
+  
+  # Enable hash chain for tamper detection
+  enable_hash_chain: true
+
+# =============================================================================
+# BACKEND SYNC CONFIGURATION
+# =============================================================================
+backend:
+  # Enable backend synchronization
+  enabled: false
+  
+  # Backend API endpoint
+  api_url: "https://your-backend.example.com/api/v1"
+  
+  # Authentication
+  api_key: ""
+  
+  # Sync settings
+  sync_interval_seconds: 300
+  retry_attempts: 3
+  retry_delay_seconds: 60
+
+# =============================================================================
+# ALERT CONFIGURATION
+# =============================================================================
+alerts:
+  # Visual alerts
+  display:
+    accept_color: "#00FF00"
+    reject_color: "#FF0000"
+    review_color: "#FFFF00"
+  
+  # Audio alerts
+  audio:
+    enabled: true
+    accept_sound: "sounds/accept.wav"
+    reject_sound: "sounds/reject.wav"
+    review_sound: "sounds/review.wav"
+  
+  # GPIO alerts (for industrial light towers)
+  gpio:
+    enabled: false
+    accept_pin: 17
+    reject_pin: 27
+    review_pin: 22
+
+# =============================================================================
+# LOGGING CONFIGURATION
+# =============================================================================
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/detector.log"
+  max_size_mb: 100
+  backup_count: 5

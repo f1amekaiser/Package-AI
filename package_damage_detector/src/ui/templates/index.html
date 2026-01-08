@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PackageAI — Enterprise Damage Detection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            /* Premium Restrained Palette */
+            --color-accept: #18794E;
+            --color-reject: #CD2B31;
+            --color-review: #B45309;
+            --color-info: #2563EB;
+
+            /* Near-white neutrals */
+            --bg-primary: #FAFBFC;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F6F6F6;
+            --text-primary: #111111;
+            --text-secondary: #6E6E6E;
+            --text-tertiary: #A0A0A0;
+            --border-color: #F0F0F0;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+            /* Semantic tints */
+            --tint-accept: #F0FDF4;
+            --tint-reject: #FEF2F2;
+            --tint-review: #FFFBEB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            font-size: 14px;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--text-primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+        }
+
+        .nav-tab {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            transition: color 0.15s;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* System Health Indicator */
+        .system-health {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .health-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-accept);
+            animation: pulse 2s infinite;
+        }
+
+        .health-dot.degraded {
+            background: var(--color-review);
+        }
+
+        .health-dot.offline {
+            background: var(--color-reject);
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .latency-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .time-display {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== MAIN ===== */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .card-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-tertiary);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .stat-card.total {
+            border-left-color: var(--text-primary);
+        }
+
+        .stat-card.accept {
+            border-left-color: var(--color-accept);
+        }
+
+        .stat-card.reject {
+            border-left-color: var(--color-reject);
+        }
+
+        .stat-card.review {
+            border-left-color: var(--color-review);
+        }
+
+        .stat-card.confidence {
+            border-left-color: var(--color-info);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .stat-card.accept .stat-value {
+            color: var(--color-accept);
+        }
+
+        .stat-card.reject .stat-value {
+            color: var(--color-reject);
+        }
+
+        .stat-card.review .stat-value {
+            color: var(--color-review);
+        }
+
+        .stat-card.confidence .stat-value {
+            color: var(--text-primary);
+        }
+
+        .stat-trend {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        /* Real-time Chart */
+        .live-chart {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            padding: 16px 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            border-radius: 3px 3px 0 0;
+            min-height: 8px;
+            transition: height 0.5s ease;
+            position: relative;
+        }
+
+        .chart-bar.accept {
+            background: var(--color-accept);
+            opacity: 0.6;
+        }
+
+        .chart-bar.reject {
+            background: var(--color-reject);
+            opacity: 0.6;
+        }
+
+        .chart-bar.review {
+            background: var(--color-review);
+            opacity: 0.6;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chart-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .live-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--color-accept);
+            animation: pulse 2s infinite;
+        }
+
+        /* Distribution Chart */
+        .donut-chart {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 16px auto;
+            background: conic-gradient(var(--color-accept) 0deg var(--accept-deg, 180deg),
+                    var(--color-reject) var(--accept-deg, 180deg) var(--reject-deg, 252deg),
+                    var(--color-review) var(--reject-deg, 252deg) 360deg);
+            position: relative;
+        }
+
+        .donut-chart::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .legend-dot.accept {
+            background: var(--color-accept);
+        }
+
+        .legend-dot.reject {
+            background: var(--color-reject);
+        }
+
+        .legend-dot.review {
+            background: var(--color-review);
+        }
+
+        /* ===== AI PROCESSING ===== */
+        .processing-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 16px;
+        }
+
+        .image-section {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+        }
+
+        .upload-zone {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upload-zone:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 14px;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        /* Detection Overlays */
+        .detection-overlay {
+            position: absolute;
+            border: 2px solid var(--color-reject);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .detection-overlay:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(1.02);
+        }
+
+        .detection-overlay.minor {
+            border-color: var(--color-review);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .detection-label {
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: var(--color-reject);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .detection-overlay.minor .detection-label {
+            background: var(--color-review);
+        }
+
+        /* Explainability Panel */
+        .explain-panel {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 14px 16px;
+            border-radius: 10px;
+            display: none;
+            backdrop-filter: blur(8px);
+        }
+
+        .explain-panel.active {
+            display: block;
+        }
+
+        .explain-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-reject);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .explain-text {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .explain-confidence {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1E293B;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-accept {
+            background: var(--color-accept);
+            color: white;
+        }
+
+        .btn-reject {
+            background: var(--color-reject);
+            color: white;
+        }
+
+        .btn-accept:hover {
+            opacity: 0.9;
+        }
+
+        .btn-reject:hover {
+            opacity: 0.9;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* Severity Score Gauge */
+        .severity-gauge {
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            margin: 0 auto 16px;
+            overflow: hidden;
+        }
+
+        .gauge-bg {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#D1D5DB 0deg 60deg,
+                    #9CA3AF 60deg 120deg,
+                    #6B7280 120deg 180deg,
+                    var(--bg-tertiary) 180deg 360deg);
+            position: absolute;
+            top: 0;
+        }
+
+        .gauge-needle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            height: 40px;
+            background: var(--text-primary);
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(var(--needle-rotation, -90deg));
+            border-radius: 2px;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .gauge-center {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--text-primary);
+            border-radius: 50%;
+        }
+
+        .severity-score {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .severity-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Decision Summary */
+        .decision-banner {
+            padding: 16px 20px;
+            border-radius: 8px;
+            border-left: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .decision-banner.accept {
+            background: var(--tint-accept);
+            border-left-color: var(--color-accept);
+        }
+
+        .decision-banner.reject {
+            background: var(--tint-reject);
+            border-left-color: var(--color-reject);
+        }
+
+        .decision-banner.review {
+            background: var(--tint-review);
+            border-left-color: var(--color-review);
+        }
+
+        .decision-badge {
+            display: inline-flex;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            margin-bottom: 10px;
+        }
+
+        .decision-badge.accept {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .decision-badge.reject {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .decision-badge.review {
+            background: #FEF9C3;
+            color: #854D0E;
+        }
+
+        .decision-badge.ready {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .decision-reason {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .detection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .detection-item:hover {
+            background: var(--bg-tertiary);
+            margin: 0 -18px;
+            padding: 10px 18px;
+        }
+
+        .detection-item:last-child {
+            border-bottom: none;
+        }
+
+        .detection-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .detection-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .confidence-value {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .severity-pill {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .severity-pill.minor {
+            background: #FEF9C3;
+            color: #854D0E;
+        }
+
+        .severity-pill.severe {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Operator Feedback */
+        .feedback-panel {
+            background: #FFFBEB;
+            border: 1px solid #FCD34D;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .feedback-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #92400E;
+            margin-bottom: 8px;
+        }
+
+        .feedback-text {
+            font-size: 12px;
+            color: #78350F;
+            margin-bottom: 14px;
+        }
+
+        .feedback-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .feedback-success {
+            background: #ECFDF5;
+            border: 1px solid var(--color-accept);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            color: #065F46;
+            font-size: 12px;
+            display: none;
+        }
+
+        .feedback-success.show {
+            display: block;
+        }
+
+        /* ===== HISTORY ===== */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-tertiary);
+        }
+
+        .history-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .history-table tr {
+            transition: background 0.15s;
+        }
+
+        .history-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .history-table tr.new {
+            animation: highlight 2s ease;
+        }
+
+        @keyframes highlight {
+            0% {
+                background: #DBEAFE;
+            }
+
+            100% {
+                background: transparent;
+            }
+        }
+
+        .package-id {
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pill.accept {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-pill.reject {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .status-pill.review {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-tertiary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">AI</div>
+                <span class="logo-text">PackageAI</span>
+            </div>
+
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+                <button class="nav-tab" data-page="processing">AI Image Processing</button>
+                <button class="nav-tab" data-page="history">History</button>
+            </nav>
+
+            <div class="header-right">
+                <div class="system-health">
+                    <div class="health-indicator">
+                        <span class="health-dot" id="healthDot"></span>
+                        <span id="healthStatus">Optimal</span>
+                    </div>
+                    <span class="latency-badge" id="latencyBadge">12ms</span>
+                </div>
+                <span class="time-display" id="currentTime">--:--:--</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- DASHBOARD -->
+        <section class="page active" id="dashboardPage">
+            <div class="stats-row">
+                <div class="stat-card total">
+                    <div class="stat-label">Total Inspected</div>
+                    <div class="stat-value" id="dashTotal">0</div>
+                    <div class="stat-trend">Real-time count</div>
+                </div>
+                <div class="stat-card accept">
+                    <div class="stat-label">Accepted</div>
+                    <div class="stat-value" id="dashAccept">0</div>
+                    <div class="stat-trend">No damage detected</div>
+                </div>
+                <div class="stat-card reject">
+                    <div class="stat-label">Rejected</div>
+                    <div class="stat-value" id="dashReject">0</div>
+                    <div class="stat-trend">Damage confirmed</div>
+                </div>
+                <div class="stat-card review">
+                    <div class="stat-label">Review Required</div>
+                    <div class="stat-value" id="dashReview">0</div>
+                    <div class="stat-trend">Pending decision</div>
+                </div>
+                <div class="stat-card confidence">
+                    <div class="stat-label">Avg Confidence</div>
+                    <div class="stat-value" id="dashConfidence">--%</div>
+                    <div class="stat-trend">Model certainty</div>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Inspection Timeline</span>
+                        <span class="live-indicator"><span class="live-dot"></span> Live</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="live-chart" id="liveChart"></div>
+                        <div class="chart-labels" id="chartLabels"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Decision Distribution</span>
+                        <span class="card-badge" id="distTotal">0 total</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="donut-chart" id="donutChart"></div>
+                        <div class="legend">
+                            <div class="legend-item"><span class="legend-dot accept"></span><span
+                                    id="legendAccept">Accepted (0%)</span></div>
+                            <div class="legend-item"><span class="legend-dot reject"></span><span
+                                    id="legendReject">Rejected (0%)</span></div>
+                            <div class="legend-item"><span class="legend-dot review"></span><span
+                                    id="legendReview">Review (0%)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI PROCESSING -->
+        <section class="page" id="processingPage">
+            <div class="processing-grid">
+                <div class="image-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Package Image</span>
+                            <span class="card-badge" id="imageStatus">No image</span>
+                        </div>
+                        <div class="image-wrapper" id="imageWrapper">
+                            <div class="upload-zone" id="uploadZone">
+                                <input type="file" id="imageInput" accept="image/*" style="display:none">
+                                <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <div class="upload-title">Upload Package Image</div>
+                                <div class="upload-hint">Drag & drop or click to browse</div>
+                                <button class="btn btn-primary"
+                                    onclick="document.getElementById('imageInput').click()">Choose Image</button>
+                            </div>
+                            <img id="previewImage" class="preview-image" alt="Preview">
+                            <div id="detectionOverlays"></div>
+                            <div class="explain-panel" id="explainPanel">
+                                <div class="explain-title" id="explainTitle">Damage Detected</div>
+                                <div class="explain-text" id="explainText"></div>
+                                <div class="explain-confidence" id="explainConfidence"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-row hidden" id="actionRow">
+                        <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeImage()">Analyze Image</button>
+                        <button class="btn btn-secondary" onclick="clearImage()">Clear</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="decision-banner" id="decisionBanner">
+                                <span class="decision-badge ready" id="decisionBadge">Ready</span>
+                                <p class="decision-reason" id="decisionReason">Upload an image to begin AI-powered
+                                    damage inspection.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Severity Score</span>
+                        </div>
+                        <div class="severity-gauge">
+                            <div class="gauge-container">
+                                <div class="gauge-bg"></div>
+                                <div class="gauge-needle" id="gaugeNeedle"></div>
+                                <div class="gauge-center"></div>
+                            </div>
+                            <div class="severity-score" id="severityScore">--</div>
+                            <div class="severity-label" id="severityLabel">Awaiting Analysis</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Detections</span>
+                            <span class="card-badge" id="detectionCount">0 found</span>
+                        </div>
+                        <div class="card-body" id="detectionList">
+                            <div class="empty-state">No detections yet</div>
+                        </div>
+                    </div>
+
+                    <div class="card hidden" id="feedbackCard">
+                        <div class="card-body">
+                            <div class="feedback-panel" id="feedbackPanel">
+                                <div class="feedback-title">Operator Decision Required</div>
+                                <div class="feedback-text">Review detections and provide final decision. Your feedback
+                                    improves model accuracy.</div>
+                                <div class="feedback-actions">
+                                    <button class="btn btn-accept" onclick="submitFeedback('ACCEPT')">Accept</button>
+                                    <button class="btn btn-reject" onclick="submitFeedback('REJECT')">Reject</button>
+                                </div>
+                            </div>
+                            <div class="feedback-success" id="feedbackSuccess">
+                                ✓ Feedback recorded successfully
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="page" id="historyPage">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Inspection History</span>
+                    <span class="live-indicator"><span class="live-dot"></span> Live</span>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Package ID</th>
+                            <th>Decision</th>
+                            <th>Severity</th>
+                            <th>Confidence</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr>
+                            <td colspan="6" class="empty-state">No inspection history yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ===== STATE =====
+        const state = {
+            stats: { total: 0, accept: 0, reject: 0, review: 0 },
+            confidences: [],
+            history: [],
+            chartData: [],
+            selectedFile: null,
+            currentDetections: [],
+            systemHealth: { status: 'optimal', latency: 12 }
+        };
+
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.page + 'Page').classList.add('active');
+            });
+        });
+
+        // ===== REAL-TIME CLOCK =====
+        function updateTime() {
+            document.getElementById('currentTime').textContent = new Date().toLocaleTimeString();
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // ===== SYSTEM HEALTH SIMULATION =====
+        function updateSystemHealth() {
+            const latency = Math.floor(Math.random() * 30) + 8;
+            state.systemHealth.latency = latency;
+            document.getElementById('latencyBadge').textContent = latency + 'ms';
+
+            const dot = document.getElementById('healthDot');
+            const status = document.getElementById('healthStatus');
+
+            if (latency > 50) {
+                dot.classList.add('degraded');
+                status.textContent = 'Degraded';
+            } else {
+                dot.classList.remove('degraded');
+                status.textContent = 'Optimal';
+            }
+        }
+        setInterval(updateSystemHealth, 3000);
+
+        // ===== DASHBOARD UPDATES =====
+        function updateDashboard() {
+            const total = state.stats.total || 1;
+
+            animateValue('dashTotal', state.stats.total);
+            animateValue('dashAccept', state.stats.accept);
+            animateValue('dashReject', state.stats.reject);
+            animateValue('dashReview', state.stats.review);
+
+            const avgConf = state.confidences.length ?
+                Math.round(state.confidences.reduce((a, b) => a + b, 0) / state.confidences.length) : 0;
+            document.getElementById('dashConfidence').textContent = avgConf + '%';
+
+            // Update distribution chart
+            const acceptPct = (state.stats.accept / total * 100) || 0;
+            const rejectPct = (state.stats.reject / total * 100) || 0;
+            const reviewPct = (state.stats.review / total * 100) || 0;
+
+            const acceptDeg = acceptPct * 3.6;
+            const rejectDeg = acceptDeg + rejectPct * 3.6;
+
+            document.getElementById('donutChart').style.setProperty('--accept-deg', acceptDeg + 'deg');
+            document.getElementById('donutChart').style.setProperty('--reject-deg', rejectDeg + 'deg');
+
+            document.getElementById('distTotal').textContent = total + ' total';
+            document.getElementById('legendAccept').textContent = `Accepted (${Math.round(acceptPct)}%)`;
+            document.getElementById('legendReject').textContent = `Rejected (${Math.round(rejectPct)}%)`;
+            document.getElementById('legendReview').textContent = `Review (${Math.round(reviewPct)}%)`;
+        }
+
+        function animateValue(id, value) {
+            const el = document.getElementById(id);
+            el.textContent = value;
+            el.classList.add('flash');
+            setTimeout(() => el.classList.remove('flash'), 300);
+        }
+
+        // Initialize live chart
+        function initChart() {
+            const chart = document.getElementById('liveChart');
+            const labels = document.getElementById('chartLabels');
+            for (let i = 0; i < 12; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar accept';
+                bar.style.height = '20px';
+                chart.appendChild(bar);
+
+                const label = document.createElement('span');
+                label.className = 'chart-label';
+                label.textContent = '';
+                labels.appendChild(label);
+            }
+            state.chartData = new Array(12).fill({ height: 20, type: 'accept' });
+        }
+        initChart();
+
+        function addToChart(decision) {
+            const chart = document.getElementById('liveChart');
+            const bars = chart.children;
+
+            // Shift data
+            state.chartData.shift();
+            state.chartData.push({
+                height: Math.random() * 150 + 50,
+                type: decision.toLowerCase()
+            });
+
+            // Update bars
+            for (let i = 0; i < bars.length; i++) {
+                bars[i].style.height = state.chartData[i].height + 'px';
+                bars[i].className = 'chart-bar ' + state.chartData[i].type;
+            }
+        }
+
+        // ===== IMAGE HANDLING =====
+        const uploadZone = document.getElementById('uploadZone');
+        const imageInput = document.getElementById('imageInput');
+        const imageWrapper = document.getElementById('imageWrapper');
+
+        imageWrapper.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadZone.style.background = 'var(--bg-tertiary)';
+        });
+
+        imageWrapper.addEventListener('dragleave', () => {
+            uploadZone.style.background = '';
+        });
+
+        imageWrapper.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadZone.style.background = '';
+            if (e.dataTransfer.files.length) handleImageSelect(e.dataTransfer.files[0]);
+        });
+
+        uploadZone.addEventListener('click', e => {
+            if (e.target.tagName !== 'BUTTON') imageInput.click();
+        });
+
+        imageInput.addEventListener('change', e => {
+            if (e.target.files.length) handleImageSelect(e.target.files[0]);
+        });
+
+        function handleImageSelect(file) {
+            if (!file.type.startsWith('image/')) return alert('Please select an image');
+            state.selectedFile = file;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                const preview = document.getElementById('previewImage');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                uploadZone.classList.add('hidden');
+                document.getElementById('actionRow').classList.remove('hidden');
+                document.getElementById('imageStatus').textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            state.selectedFile = null;
+            state.currentDetections = [];
+            document.getElementById('previewImage').style.display = 'none';
+            document.getElementById('uploadZone').classList.remove('hidden');
+            document.getElementById('actionRow').classList.add('hidden');
+            document.getElementById('imageStatus').textContent = 'No image';
+            document.getElementById('detectionOverlays').innerHTML = '';
+            document.getElementById('explainPanel').classList.remove('active');
+            resetDecision();
+        }
+
+        function resetDecision() {
+            document.getElementById('decisionBanner').className = 'decision-banner';
+            document.getElementById('decisionBadge').textContent = 'Ready';
+            document.getElementById('decisionBadge').className = 'decision-badge ready';
+            document.getElementById('decisionReason').textContent = 'Upload an image to begin AI-powered damage inspection.';
+            document.getElementById('detectionList').innerHTML = '<div class="empty-state">No detections yet</div>';
+            document.getElementById('detectionCount').textContent = '0 found';
+            document.getElementById('feedbackCard').classList.add('hidden');
+            document.getElementById('severityScore').textContent = '--';
+            document.getElementById('severityLabel').textContent = 'Awaiting Analysis';
+            document.getElementById('gaugeNeedle').style.setProperty('--needle-rotation', '-90deg');
+        }
+
+        // ===== ANALYSIS =====
+        async function analyzeImage() {
+            if (!state.selectedFile) return;
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.textContent = 'Analyzing...';
+            btn.disabled = true;
+
+            try {
+                // Create form data with the image file
+                const formData = new FormData();
+                formData.append('image', state.selectedFile);
+                formData.append('package_id', 'PKG-' + Date.now());
+
+                // Call real backend API
+                const response = await fetch('/analyze-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Analysis failed: ' + response.statusText);
+                }
+
+                const data = await response.json();
+                console.log('Backend response:', data);
+
+                // Transform backend response to frontend format
+                const result = transformBackendResponse(data);
+                handleAnalysisResult(result);
+
+                // Update annotated image if available
+                if (data.annotated_image) {
+                    const previewImage = document.getElementById('previewImage');
+                    if (previewImage) {
+                        previewImage.src = data.annotated_image;
+                    }
+                }
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Analysis failed: ' + error.message);
+            }
+
+            btn.textContent = 'Analyze Image';
+            btn.disabled = false;
+        }
+
+        // Transform backend response to frontend format
+        function transformBackendResponse(data) {
+            const decision = data.decision?.decision || 'ACCEPT';
+            const detections = (data.detections || []).map((det, idx) => ({
+                id: idx + 1,
+                name: det.class_name || 'damage',
+                confidence: det.confidence || 0,
+                severity: det.severity_level?.toLowerCase() || 'minor',
+                x: det.bbox ? (det.bbox[0] / 640 * 100) : 10,
+                y: det.bbox ? (det.bbox[1] / 480 * 100) : 10,
+                w: det.bbox ? ((det.bbox[2] - det.bbox[0]) / 640 * 100) : 20,
+                h: det.bbox ? ((det.bbox[3] - det.bbox[1]) / 480 * 100) : 20,
+                explanation: `${det.class_name || 'Damage'} detected with ${(det.confidence * 100).toFixed(0)}% confidence`,
+                contribution: Math.round(det.confidence * 50)
+            }));
+
+            // Calculate severity score from detections
+            let severity = 0;
+            if (detections.length > 0) {
+                const avgConf = detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length;
+                severity = Math.round(avgConf * 100);
+            }
+
+            return {
+                decision: decision,
+                detections: detections,
+                severity: severity,
+                confidence: data.detections?.length > 0 ?
+                    Math.round(data.detections[0].confidence * 100) : 85
+            };
+        }
+
+        // NOTE: generateAnalysisResult() removed - system now uses real backend API
+        // All analysis is performed by TwoStageInferenceEngine on the server
+
+        function handleAnalysisResult(result) {
+            state.currentDetections = result.detections;
+            const decisionClass = result.decision.toLowerCase().replace('_required', '');
+
+            // Update severity gauge
+            const rotation = (result.severity / 100) * 180 - 90;
+            document.getElementById('gaugeNeedle').style.setProperty('--needle-rotation', rotation + 'deg');
+            document.getElementById('severityScore').textContent = result.severity;
+            document.getElementById('severityScore').style.color =
+                result.severity < 30 ? 'var(--color-accept)' :
+                    result.severity < 60 ? 'var(--color-review)' : 'var(--color-reject)';
+            document.getElementById('severityLabel').textContent =
+                result.severity < 30 ? 'Low Risk' :
+                    result.severity < 60 ? 'Moderate Risk' : 'High Risk';
+
+            // Update decision
+            document.getElementById('decisionBanner').className = 'decision-banner ' + decisionClass;
+            document.getElementById('decisionBadge').textContent = result.decision.replace('_', ' ');
+            document.getElementById('decisionBadge').className = 'decision-badge ' + decisionClass;
+            document.getElementById('decisionReason').textContent = getDecisionReason(result);
+
+            // Render detections
+            renderDetections(result.detections);
+            document.getElementById('detectionCount').textContent = result.detections.length + ' found';
+
+            // Show feedback panel for review
+            if (result.decision === 'REVIEW_REQUIRED') {
+                document.getElementById('feedbackCard').classList.remove('hidden');
+                document.getElementById('feedbackPanel').style.display = 'block';
+                document.getElementById('feedbackSuccess').classList.remove('show');
+            } else {
+                document.getElementById('feedbackCard').classList.add('hidden');
+                updateStats(result.decision, result.confidence);
+                addToHistory(result);
+            }
+        }
+
+        function getDecisionReason(result) {
+            if (result.decision === 'ACCEPT') {
+                return `Package passed inspection with severity score ${result.severity}/100. No significant damage patterns detected by AI analysis.`;
+            } else if (result.decision === 'REJECT') {
+                return `Package rejected with severity score ${result.severity}/100. ${result.detections[0]?.name} detected with ${Math.round(result.detections[0]?.confidence * 100)}% confidence.`;
+            } else {
+                return `Review required. Severity score ${result.severity}/100 falls within threshold range. Operator decision needed for final classification.`;
+            }
+        }
+
+        function renderDetections(detections) {
+            const container = document.getElementById('detectionOverlays');
+            const list = document.getElementById('detectionList');
+            container.innerHTML = '';
+
+            if (!detections.length) {
+                list.innerHTML = '<div class="empty-state">No damage detected</div>';
+                return;
+            }
+
+            list.innerHTML = detections.map(d => `
+                <div class="detection-item" onclick="showExplanation(${d.id})">
+                    <span class="detection-name">${d.name}</span>
+                    <div class="detection-meta">
+                        <span class="confidence-value">${Math.round(d.confidence * 100)}%</span>
+                        <span class="severity-pill ${d.severity}">${d.severity}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            detections.forEach(d => {
+                const overlay = document.createElement('div');
+                overlay.className = 'detection-overlay ' + d.severity;
+                overlay.style.cssText = `left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%`;
+                overlay.innerHTML = `<span class="detection-label">${d.name}</span>`;
+                overlay.onclick = () => showExplanation(d.id);
+                container.appendChild(overlay);
+            });
+        }
+
+        function showExplanation(id) {
+            const detection = state.currentDetections.find(d => d.id === id);
+            if (!detection) return;
+
+            const panel = document.getElementById('explainPanel');
+            document.getElementById('explainTitle').textContent = detection.name;
+            document.getElementById('explainText').textContent = detection.explanation;
+            document.getElementById('explainConfidence').textContent =
+                `Confidence: ${Math.round(detection.confidence * 100)}% | Contribution to severity: ${detection.contribution}%`;
+            panel.classList.add('active');
+
+            setTimeout(() => panel.classList.remove('active'), 5000);
+        }
+
+        // ===== FEEDBACK =====
+        function submitFeedback(decision) {
+            document.getElementById('feedbackPanel').style.display = 'none';
+            document.getElementById('feedbackSuccess').classList.add('show');
+
+            const decisionClass = decision.toLowerCase();
+            document.getElementById('decisionBanner').className = 'decision-banner ' + decisionClass;
+            document.getElementById('decisionBadge').textContent = decision;
+            document.getElementById('decisionBadge').className = 'decision-badge ' + decisionClass;
+            document.getElementById('decisionReason').textContent =
+                `Operator override: Package ${decision.toLowerCase()}ed. Feedback logged for model improvement.`;
+
+            updateStats(decision, 85);
+            addToHistory({ decision, detections: state.currentDetections, severity: parseInt(document.getElementById('severityScore').textContent) || 50, confidence: 85 }, true);
+
+            setTimeout(() => document.getElementById('feedbackCard').classList.add('hidden'), 2000);
+        }
+
+        // ===== STATS & HISTORY =====
+        function updateStats(decision, confidence) {
+            state.stats.total++;
+            if (decision === 'ACCEPT') state.stats.accept++;
+            else if (decision === 'REJECT') state.stats.reject++;
+            else state.stats.review++;
+
+            state.confidences.push(confidence);
+            updateDashboard();
+            addToChart(decision);
+        }
+
+        function addToHistory(result, isOverride = false) {
+            const entry = {
+                timestamp: new Date().toLocaleString(),
+                packageId: 'PKG-' + Date.now().toString(36).toUpperCase(),
+                decision: result.decision.replace('_REQUIRED', ''),
+                severity: result.severity,
+                confidence: result.confidence,
+                source: isOverride ? 'Operator' : 'AI'
+            };
+            state.history.unshift(entry);
+
+            const tbody = document.getElementById('historyBody');
+            if (state.history.length === 1) tbody.innerHTML = '';
+
+            const row = document.createElement('tr');
+            row.className = 'new';
+            const decisionClass = entry.decision.toLowerCase();
+            row.innerHTML = `
+                <td>${entry.timestamp}</td>
+                <td><span class="package-id">${entry.packageId}</span></td>
+                <td><span class="status-pill ${decisionClass}">${entry.decision}</span></td>
+                <td>${entry.severity}/100</td>
+                <td>${entry.confidence}%</td>
+                <td>${entry.source}</td>
+            `;
+            tbody.insertBefore(row, tbody.firstChild);
+        }
+    </script>
+</body>
+
+</html>

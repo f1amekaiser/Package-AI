@@ -1,0 +1,30 @@
+# YOLOv5 Dataset Configuration for Package Damage Detection
+# Usage: python train.py --data damage.yaml
+
+# Dataset paths (relative to yolov5 directory)
+path: ../package_damage_detector/data
+train: images/train
+val: images/val
+test: images/test
+
+# Number of classes
+nc: 5
+
+# Class names - these must match exactly during labeling
+names:
+  0: structural_deformation
+  1: surface_breach
+  2: contamination_stain
+  3: compression_damage
+  4: tape_seal_damage
+
+# Class descriptions (for reference, not used by YOLO)
+# 0: structural_deformation - Dents, bent corners, warped panels, impact marks
+# 1: surface_breach - Tears, punctures, holes, rips, burst seams
+# 2: contamination_stain - Water stains, oil marks, chemical spills, mold
+# 3: compression_damage - Crushed corners, collapsed edges, buckling
+# 4: tape_seal_damage - Torn tape, missing tape, peeling labels, broken straps
+
+# Download script (optional - not needed for local datasets)
+# download: |
+#   # No auto-download for custom industrial datasets

@@ -1,0 +1,42 @@
+# Package Damage Detection System - Requirements
+
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+PyYAML>=6.0
+
+# YOLOv5 dependencies
+matplotlib>=3.7.0
+Pillow>=10.0.0
+scipy>=1.11.0
+tqdm>=4.66.0
+seaborn>=0.13.0
+pandas>=2.0.0
+
+# API server
+fastapi>=0.103.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# Web UI server
+flask>=3.0.0
+
+# UI (optional)
+# PyQt6>=6.5.0
+
+# TensorRT (optional, for optimized edge inference)
+# tensorrt>=8.6.0
+
+# Logging and monitoring
+psutil>=5.9.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Development
+black>=23.9.0
+flake8>=6.1.0
+mypy>=1.5.0
