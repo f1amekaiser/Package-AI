@@ -11,9 +11,39 @@ from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from .inference_engine import Detection, InferenceResult
-
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class Detection:
+    """Represents a single detection result (simplified for decision engine)."""
+    class_id: int
+    class_name: str
+    confidence: float
+    bbox: Tuple[float, float, float, float]  # x1, y1, x2, y2 (normalized)
+    bbox_pixels: Tuple[int, int, int, int] = (0, 0, 0, 0)
+    camera_id: str = ""
+    
+    @property
+    def area_normalized(self) -> float:
+        """Calculate normalized area of detection box."""
+        width = self.bbox[2] - self.bbox[0]
+        height = self.bbox[3] - self.bbox[1]
+        return width * height
+
+
+@dataclass
+class InferenceResult:
+    """Container for inference results from a single image."""
+    image_path: str
+    camera_id: str
+    detections: List[Detection] = field(default_factory=list)
+    inference_time_ms: float = 0.0
+    image_shape: Tuple[int, int] = (0, 0)
+    
+    @property
+    def has_detections(self) -> bool:
+        return len(self.detections) > 0
 
 
 class DecisionType(Enum):

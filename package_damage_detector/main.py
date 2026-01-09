@@ -5,33 +5,37 @@ Package Damage Detection System - Main Application
 Edge-Based Intelligent Package Damage Detection for Warehouse Receiving Docks
 
 Usage:
-    # Run with default config
-    python main.py
+    # Run single image inspection
+    python main.py --image path/to/image.jpg
     
-    # Run with custom config
-    python main.py --config path/to/config.yaml
-    
-    # Run in demo mode (simulated cameras)
+    # Run in demo mode (simulated inspections)
     python main.py --demo
     
-    # Run single inspection
-    python main.py --single --package-id PKG-001
+    # Run web UI server
+    python main.py --server
+    
+    # Run continuous demo mode
+    python main.py --demo --interval 3
 """
 
 import argparse
 import sys
 import signal
 import time
+import random
 import logging
 from pathlib import Path
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
+
+import numpy as np
+from PIL import Image
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from src.utils.helpers import load_config, setup_logging, generate_package_id, format_duration
-from src.services.inspection_service import create_inspection_service, InspectionService
-from src.core.decision_engine import DecisionType
+from src.utils.helpers import load_config, setup_logging, generate_package_id
+from src.core.inference_engine import TwoStageInferenceEngine, TwoStageDetection
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +43,7 @@ logger = logging.getLogger(__name__)
 class PackageDamageDetector:
     """
     Main application class for the package damage detection system.
+    Uses Two-Stage Pipeline: YOLO Detector + Damage Classifier
     """
     
     def __init__(
@@ -51,11 +56,11 @@ class PackageDamageDetector:
         
         Args:
             config_path: Path to configuration file
-            demo_mode: Use simulated cameras for testing
+            demo_mode: Use simulated inspections for testing
         """
         self.config_path = config_path
         self.demo_mode = demo_mode
-        self.inspection_service: Optional[InspectionService] = None
+        self.engine: Optional[TwoStageInferenceEngine] = None
         self._running = False
         
         # Load configuration
@@ -74,79 +79,199 @@ class PackageDamageDetector:
     
     def initialize(self) -> bool:
         """
-        Initialize all system components.
+        Initialize the two-stage inference engine.
         
         Returns:
             True if initialization successful
         """
+        if self.demo_mode:
+            logger.info("Running in demo mode - no model loading required")
+            return True
+        
         try:
-            logger.info("Initializing inspection service...")
+            logger.info("Initializing Two-Stage Inference Engine...")
             
-            self.inspection_service = create_inspection_service(
-                self.config,
-                simulated_cameras=self.demo_mode
+            models_dir = Path(__file__).parent / "models"
+            detector_path = models_dir / "best.pt"
+            classifier_path = models_dir / "damaged_classifier_best.pt"
+            
+            if not detector_path.exists():
+                raise FileNotFoundError(f"Detector model not found: {detector_path}")
+            if not classifier_path.exists():
+                raise FileNotFoundError(f"Classifier model not found: {classifier_path}")
+            
+            self.engine = TwoStageInferenceEngine(
+                detector_path=str(detector_path),
+                classifier_path=str(classifier_path),
+                detector_conf=0.05,
+                device="cpu"
             )
             
-            logger.info("System initialized successfully")
+            logger.info("Two-Stage Inference Engine initialized successfully")
             return True
             
         except Exception as e:
             logger.error(f"Initialization failed: {e}")
             return False
     
-    def run_single_inspection(self, package_id: Optional[str] = None) -> bool:
+    def inspect_image(self, image_path: str, package_id: Optional[str] = None) -> dict:
+        """
+        Run inspection on a single image using the two-stage pipeline.
+        
+        Args:
+            image_path: Path to the image file
+            package_id: Optional package ID
+            
+        Returns:
+            Inspection result dictionary
+        """
+        if not package_id:
+            package_id = generate_package_id()
+        
+        logger.info(f"Inspecting image: {image_path}")
+        logger.info(f"Package ID: {package_id}")
+        
+        start_time = time.time()
+        
+        # Load image
+        pil_img = Image.open(image_path).convert('RGB')
+        img_array = np.array(pil_img)
+        
+        # Run two-stage inference
+        decision, detections, reason = self.engine.infer_with_decision(img_array)
+        
+        inference_time = (time.time() - start_time) * 1000
+        
+        # Format result
+        result = {
+            "inspection_id": f"INS-{datetime.now().strftime('%Y%m%d-%H%M%S')}",
+            "package_id": package_id,
+            "decision": decision,
+            "reason": reason,
+            "detections": len(detections),
+            "inference_time_ms": inference_time,
+            "details": []
+        }
+        
+        for det in detections:
+            result["details"].append({
+                "label": det.classifier_label,
+                "confidence": f"{det.classifier_confidence:.1%}",
+                "yolo_conf": f"{det.yolo_confidence:.1%}"
+            })
+        
+        return result
+    
+    def run_demo_inspection(self, package_id: str) -> dict:
+        """
+        Run a simulated inspection for demo mode.
+        
+        Args:
+            package_id: Package ID
+            
+        Returns:
+            Simulated inspection result
+        """
+        damage_types = [
+            ("structural_deformation", "Dent on front panel"),
+            ("surface_breach", "Tear on corner"),
+            ("contamination_stain", "Water stain detected"),
+            ("compression_damage", "Crushed corner"),
+            ("tape_seal_damage", "Tape peeling"),
+        ]
+        
+        # Randomly decide if damaged
+        is_damaged = random.random() > 0.4
+        
+        detections = []
+        if is_damaged:
+            num_detections = random.randint(1, 3)
+            for _ in range(num_detections):
+                damage = random.choice(damage_types)
+                detections.append({
+                    "class_name": damage[0],
+                    "description": damage[1],
+                    "confidence": random.uniform(0.55, 0.95),
+                    "severity": random.choice(["MINOR", "MODERATE", "SEVERE"]),
+                    "camera": f"CAM-0{random.randint(1, 5)}"
+                })
+        
+        # Calculate decision
+        if not detections:
+            decision = "ACCEPT"
+            reason = "No damage detected"
+        elif any(d["severity"] == "SEVERE" for d in detections):
+            decision = "REJECT"
+            reason = "Severe damage detected"
+        elif any(d["severity"] == "MODERATE" for d in detections):
+            decision = "REVIEW_REQUIRED"
+            reason = "Moderate damage requires operator review"
+        else:
+            decision = "ACCEPT"
+            reason = "Minor damage only - acceptable"
+        
+        return {
+            "inspection_id": f"INS-{datetime.now().strftime('%Y%m%d-%H%M%S')}",
+            "package_id": package_id,
+            "decision": decision,
+            "reason": reason,
+            "detections": detections,
+            "inference_time_ms": random.uniform(30, 80)
+        }
+    
+    def run_single_inspection(self, package_id: Optional[str] = None, image_path: Optional[str] = None) -> bool:
         """
         Run a single package inspection.
         
         Args:
             package_id: Optional package ID (generated if not provided)
+            image_path: Optional path to image file
             
         Returns:
             True if package accepted
         """
-        if not self.inspection_service:
-            logger.error("System not initialized")
-            return False
-        
-        # Generate package ID if not provided
         if not package_id:
             package_id = generate_package_id()
         
-        logger.info(f"Starting inspection for package: {package_id}")
-        
-        # Run inspection
-        result = self.inspection_service.inspect_package(package_id)
+        if self.demo_mode:
+            result = self.run_demo_inspection(package_id)
+        elif image_path:
+            result = self.inspect_image(image_path, package_id)
+        else:
+            logger.error("Image path required for non-demo mode")
+            return False
         
         # Log result
-        decision = result.decision
         logger.info("=" * 60)
-        logger.info(f"INSPECTION COMPLETE: {result.inspection_id}")
+        logger.info(f"INSPECTION COMPLETE: {result['inspection_id']}")
         logger.info(f"Package ID: {package_id}")
-        logger.info(f"Decision: {decision.decision_type.name}")
-        logger.info(f"Rationale: {decision.rationale}")
-        logger.info(f"Detections: {decision.total_detections}")
-        logger.info(f"Max Severity: {decision.max_severity.name}")
-        logger.info(f"Total Time: {format_duration(result.total_time_ms)}")
-        logger.info("  - Capture: " + format_duration(result.capture_time_ms))
-        logger.info("  - Inference: " + format_duration(result.inference_time_ms))
-        logger.info("  - Decision: " + format_duration(result.decision_time_ms))
-        logger.info("  - Evidence: " + format_duration(result.evidence_time_ms))
+        logger.info(f"Decision: {result['decision']}")
+        logger.info(f"Reason: {result['reason']}")
+        
+        if self.demo_mode:
+            logger.info(f"Detections: {len(result['detections'])}")
+            for i, det in enumerate(result['detections'], 1):
+                severity_icon = {"MINOR": "🟡", "MODERATE": "🟠", "SEVERE": "🔴"}[det["severity"]]
+                logger.info(f"  {i}. {det['class_name']} - {severity_icon} {det['severity']} ({det['confidence']:.1%})")
+        else:
+            logger.info(f"Detections: {result['detections']}")
+            for det in result.get('details', []):
+                logger.info(f"  - {det['label']}: {det['confidence']}")
+        
+        logger.info(f"Inference Time: {result['inference_time_ms']:.1f}ms")
         logger.info("=" * 60)
         
-        # Return accept status
-        return result.is_accept
+        return result['decision'] == "ACCEPT"
     
     def run_continuous(self, interval_seconds: float = 5.0):
         """
-        Run continuous inspection loop.
-        
-        Simulates production mode with periodic inspections.
+        Run continuous demo inspection loop.
         
         Args:
             interval_seconds: Seconds between inspections
         """
-        if not self.inspection_service:
-            logger.error("System not initialized")
+        if not self.demo_mode:
+            logger.error("Continuous mode only available in demo mode")
             return
         
         self._running = True
@@ -161,30 +286,27 @@ class PackageDamageDetector:
         
         while self._running:
             try:
-                # Generate package ID
                 package_id = generate_package_id()
-                
-                # Run inspection
-                result = self.inspection_service.inspect_package(package_id)
+                result = self.run_demo_inspection(package_id)
                 inspection_count += 1
                 
                 # Track stats
-                if result.decision.decision_type == DecisionType.ACCEPT:
+                if result['decision'] == "ACCEPT":
                     accept_count += 1
-                elif result.decision.decision_type == DecisionType.REJECT:
+                    icon = "✅"
+                elif result['decision'] == "REJECT":
                     reject_count += 1
+                    icon = "❌"
                 else:
                     review_count += 1
+                    icon = "⚠️"
                 
                 # Log summary
                 logger.info(
-                    f"[{inspection_count}] {package_id}: "
-                    f"{result.decision.decision_type.name} "
-                    f"({result.decision.total_detections} detections, "
-                    f"{format_duration(result.total_time_ms)})"
+                    f"[{inspection_count}] {package_id}: {icon} {result['decision']} "
+                    f"({len(result['detections'])} detections, {result['inference_time_ms']:.1f}ms)"
                 )
                 
-                # Wait for next inspection
                 time.sleep(interval_seconds)
                 
             except KeyboardInterrupt:
@@ -197,9 +319,9 @@ class PackageDamageDetector:
         logger.info("=" * 60)
         logger.info("SESSION SUMMARY")
         logger.info(f"Total Inspections: {inspection_count}")
-        logger.info(f"Accepted: {accept_count} ({100*accept_count/max(1,inspection_count):.1f}%)")
-        logger.info(f"Rejected: {reject_count} ({100*reject_count/max(1,inspection_count):.1f}%)")
-        logger.info(f"Review Required: {review_count} ({100*review_count/max(1,inspection_count):.1f}%)")
+        logger.info(f"✅ Accepted: {accept_count} ({100*accept_count/max(1,inspection_count):.1f}%)")
+        logger.info(f"❌ Rejected: {reject_count} ({100*reject_count/max(1,inspection_count):.1f}%)")
+        logger.info(f"⚠️  Review Required: {review_count} ({100*review_count/max(1,inspection_count):.1f}%)")
         logger.info("=" * 60)
     
     def stop(self):
@@ -209,15 +331,19 @@ class PackageDamageDetector:
     
     def cleanup(self):
         """Clean up resources."""
-        if self.inspection_service:
-            self.inspection_service.camera_manager.release()
         logger.info("Cleanup complete")
+
+
+def run_server(host: str = "0.0.0.0", port: int = 5000, debug: bool = False):
+    """Run the web UI server."""
+    from src.ui.server import run_ui_server
+    run_ui_server(host=host, port=port, demo_mode=True, debug=debug)
 
 
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Package Damage Detection System"
+        description="Package Damage Detection System - Two-Stage Pipeline"
     )
     parser.add_argument(
         "--config",
@@ -228,7 +354,18 @@ def main():
     parser.add_argument(
         "--demo",
         action="store_true",
-        help="Run in demo mode with simulated cameras"
+        help="Run in demo mode with simulated inspections"
+    )
+    parser.add_argument(
+        "--server",
+        action="store_true",
+        help="Run the web UI server"
+    )
+    parser.add_argument(
+        "--image",
+        type=str,
+        default=None,
+        help="Path to image file for single inspection"
     )
     parser.add_argument(
         "--single",
@@ -247,8 +384,25 @@ def main():
         default=5.0,
         help="Seconds between inspections in continuous mode"
     )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=5000,
+        help="Port for web server"
+    )
     
     args = parser.parse_args()
+    
+    # Run web server if requested
+    if args.server:
+        print("\n" + "=" * 60)
+        print("  📦 PACKAGE DAMAGE DETECTION SYSTEM - WEB UI")
+        print("  Two-Stage Pipeline: YOLO Detector + Damage Classifier")
+        print("=" * 60)
+        print(f"\n  Starting server on http://localhost:{args.port}")
+        print("  Press Ctrl+C to stop\n")
+        run_server(port=args.port, debug=True)
+        return
     
     # Create detector
     detector = PackageDamageDetector(
@@ -271,8 +425,8 @@ def main():
             sys.exit(1)
         
         # Run
-        if args.single:
-            accepted = detector.run_single_inspection(args.package_id)
+        if args.single or args.image:
+            accepted = detector.run_single_inspection(args.package_id, args.image)
             sys.exit(0 if accepted else 1)
         else:
             detector.run_continuous(interval_seconds=args.interval)

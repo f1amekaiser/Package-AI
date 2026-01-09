@@ -20,8 +20,7 @@ import shutil
 import cv2
 import numpy as np
 
-from .inference_engine import InferenceResult, Detection
-from .decision_engine import Decision, DecisionType, Severity, ScoredDetection
+from .decision_engine import Decision, DecisionType, Severity, ScoredDetection, Detection, InferenceResult
 
 logger = logging.getLogger(__name__)
 

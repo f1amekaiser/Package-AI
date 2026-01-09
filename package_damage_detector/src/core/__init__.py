@@ -1,14 +1,12 @@
 """Core module init."""
 
-from .inference_engine import InferenceEngine, Detection, InferenceResult, create_engine
+from .inference_engine import TwoStageInferenceEngine, TwoStageDetection
 from .decision_engine import DecisionEngine, Decision, DecisionType, Severity
 from .evidence_manager import EvidenceManager, EvidenceRecord
 
 __all__ = [
-    "InferenceEngine",
-    "Detection", 
-    "InferenceResult",
-    "create_engine",
+    "TwoStageInferenceEngine",
+    "TwoStageDetection",
     "DecisionEngine",
     "Decision",
     "DecisionType",
