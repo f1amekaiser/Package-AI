@@ -22,6 +22,7 @@ import cv2
 # Import two-stage pipeline components
 from ..core.inference_engine import TwoStageInferenceEngine, TwoStageDetection
 from ..core.evidence_manager import TwoStageEvidenceRecorder
+from ..core.decision_engine import compute_severity
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,8 @@ def create_ui_app(
         "accept_count": 0,
         "reject_count": 0,
         "review_count": 0,
-        "total_inference_time": 0.0
+        "total_inference_time": 0.0,
+        "confidences": []
     }
     
     # Initialize two-stage inference engine
@@ -86,6 +88,7 @@ def create_ui_app(
     app.config['two_stage_engine'] = two_stage_engine
     app.config['evidence_recorder'] = evidence_recorder
     app.config['inspection_history'] = {}  # Store for operator overrides
+    app.config['audit_logs'] = []  # Store for audit trail (enterprise compliance)
     
     # -------------------------------------------------------------------------
     # UI ROUTES
@@ -133,6 +136,76 @@ def create_ui_app(
             "avg_inference_time_ms": stats_data["total_inference_time"] / total
         })
     
+    @app.route('/system/status')
+    def system_status():
+        """Return live system status for dashboard indicators."""
+        stats_data = app.config['stats']
+        total = max(stats_data["total_inspections"], 1)
+        avg_latency = stats_data["total_inference_time"] / total
+        
+        # Determine system status based on metrics
+        if two_stage_engine is None:
+            status = "offline"
+        elif avg_latency > 2000:
+            status = "degraded"
+        else:
+            status = "operational"
+        
+        return jsonify({
+            "status": status,
+            "avg_latency_ms": round(avg_latency, 1),
+            "queue_depth": stats_data.get("pending_inspections", 0)
+        })
+    
+    @app.route('/api/dashboard/summary')
+    def dashboard_summary():
+        """Return real-time dashboard summary for live metrics."""
+        stats_data = app.config['stats']
+        total = max(stats_data["total_inspections"], 1)
+        
+        # Get inspection history for timeline
+        history = app.config.get('inspection_history', {})
+        timeline_data = []
+        
+        # Generate timeline from recent inspections (last 10)
+        from datetime import datetime
+        current_time = datetime.now()
+        for i in range(10):
+            hour = (current_time.hour - i) % 24
+            minute = current_time.minute
+            time_str = f"{hour:02d}:{minute:02d}"
+            # Count inspections in this time window (simplified)
+            count = len([k for k in history if time_str in str(k)]) if history else 0
+            timeline_data.insert(0, {"time": time_str, "count": count})
+        
+        # Calculate average confidence
+        confidences = stats_data.get("confidences", [])
+        avg_confidence = sum(confidences) / len(confidences) if confidences else 0
+        
+        return jsonify({
+            "total_inspected": stats_data["total_inspections"],
+            "accepted": stats_data["accept_count"],
+            "rejected": stats_data["reject_count"],
+            "review_required": stats_data["review_count"],
+            "avg_confidence": round(avg_confidence * 100, 1),
+            "timeline": timeline_data,
+            "decision_distribution": {
+                "accept": stats_data["accept_count"],
+                "reject": stats_data["reject_count"],
+                "review": stats_data["review_count"]
+            }
+        })
+    
+    @app.route('/api/audit/logs')
+    def get_audit_logs():
+        """Return audit logs for enterprise compliance tracking."""
+        audit_logs = app.config.get('audit_logs', [])
+        # Return logs in reverse chronological order (newest first)
+        return jsonify({
+            "logs": list(reversed(audit_logs)),
+            "total_count": len(audit_logs)
+        })
+    
     @app.route('/analyze-image', methods=['POST'])
     def analyze_image():
         """Analyze an uploaded image for package damage using two-stage pipeline."""
@@ -161,6 +234,12 @@ def create_ui_app(
             if engine:
                 # Real inference using two-stage pipeline
                 decision, detections, reason = engine.infer_with_decision(img_array)
+                
+                # Calculate definitive severity
+                severity_info = compute_severity(detections)
+                severity_score = severity_info["severity_score"]
+                severity_label = severity_info["severity_label"]
+                risk_level = severity_info["risk_level"]
                 
                 # Create annotated image
                 annotated = img_array.copy()
@@ -288,12 +367,49 @@ def create_ui_app(
             else:
                 stats_data["review_count"] += 1
             
+            # Track confidence for avg calculation
+            if detections:
+                max_conf = max(d.classifier_confidence for d in detections)
+                stats_data["confidences"].append(max_conf)
+            else:
+                stats_data["confidences"].append(1.0)  # 100% confidence for no-detection case
+            
             # Store for potential override
             app.config['inspection_history'][inspection_id] = {
                 "decision": decision,
                 "package_id": package_id,
                 "timestamp": datetime.utcnow().isoformat()
             }
+            
+            # Add audit log entry for compliance tracking
+            max_confidence = 100.0
+            if detection_list:
+                max_confidence = max(d.get('confidence', 1.0) for d in detection_list) * 100
+            
+            audit_entry = {
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "package_id": package_id,
+                "action": "INSPECTED",
+                "decision": decision,
+                "severity": severity_score if 'severity_score' in dir() else 0,
+                "confidence": round(max_confidence, 1),
+                "source": "AI",
+                "inspection_id": inspection_id
+            }
+            app.config['audit_logs'].append(audit_entry)
+            
+            # Add DECISION_MADE entry
+            decision_entry = {
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "package_id": package_id,
+                "action": "DECISION_MADE",
+                "decision": decision,
+                "severity": severity_score if 'severity_score' in dir() else 0,
+                "confidence": round(max_confidence, 1),
+                "source": "AI",
+                "inspection_id": inspection_id
+            }
+            app.config['audit_logs'].append(decision_entry)
             
             result = {
                 "inspection_id": inspection_id,
@@ -302,7 +418,10 @@ def create_ui_app(
                 "decision": {
                     "decision": decision,
                     "rationale": reason,
-                    "max_severity": detection_list[0]['severity_level'] if detection_list else 'NONE',
+                    "max_severity": severity_label,
+                    "severity_score": severity_score,
+                    "severity_label": severity_label,
+                    "risk_level": risk_level,
                     "total_detections": len(detection_list)
                 },
                 "detections": detection_list,
@@ -494,6 +613,19 @@ def create_ui_app(
                 stats_data["reject_count"] += 1
             else:
                 stats_data["review_count"] += 1
+        
+        # Add audit log entry for operator override
+        override_audit = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "package_id": original.get("package_id", "UNKNOWN"),
+            "action": "REVIEW_OVERRIDE",
+            "decision": new_decision,
+            "severity": 0,
+            "confidence": 100.0,
+            "source": "Manual",
+            "inspection_id": inspection_id
+        }
+        app.config['audit_logs'].append(override_audit)
         
         return jsonify({
             "status": "success",

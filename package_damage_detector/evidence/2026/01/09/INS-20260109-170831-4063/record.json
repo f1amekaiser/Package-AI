@@ -1,0 +1,54 @@
+{
+  "inspection_id": "INS-20260109-170831-4063",
+  "package_id": "PKG-1767978507966",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T17:08:31.406358Z",
+  "timestamp_local": "2026-01-09T22:38:31.469379",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [
+    {
+      "bbox": {
+        "x1": 0.0,
+        "y1": 0.047691192441773646,
+        "x2": 0.7818823699454143,
+        "y2": 0.8621491367377124
+      },
+      "yolo_confidence": 0.20031774044036865,
+      "classifier_label": "damaged",
+      "classifier_confidence": 1.0
+    },
+    {
+      "bbox": {
+        "x1": 0.08644619050165729,
+        "y1": 0.07642124231579234,
+        "x2": 0.9251872009873778,
+        "y2": 0.9315967004276017
+      },
+      "yolo_confidence": 0.09267673641443253,
+      "classifier_label": "damaged",
+      "classifier_confidence": 1.0
+    }
+  ],
+  "detection_count": 2,
+  "decision": {
+    "result": "REJECT",
+    "reason": "2 confirmed damage(s) detected"
+  },
+  "integrity": {
+    "image_hash_sha256": "36bb8b09aa22a0bb6bdff84b5681f9cfc1c0e683ae184de9d4838c315e3c7906",
+    "detection_hash_sha256": "4c602ca91d9ee40ae7236f1b1d357b2057ac57eda986cc1d76d3128de3edffc1",
+    "decision_hash_sha256": "30a2a4092f6c867246e8fb75678ab80d713ec873d71016c0aaa9a86483b4125a",
+    "record_hash_sha256": "596b0deef486f295f72ea3f75b271b94eed517b855fed9eadde7fe6729b04b25",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}

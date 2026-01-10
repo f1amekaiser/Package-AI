@@ -1,0 +1,65 @@
+{
+  "inspection_id": "INS-20260109-124307-9124",
+  "package_id": "PKG-1767962587666",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T12:43:07.912445Z",
+  "timestamp_local": "2026-01-09T18:13:07.916097",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [
+    {
+      "bbox": {
+        "x1": 0.1196204182419363,
+        "y1": 0.11550781174833552,
+        "x2": 0.8598009704393589,
+        "y2": 0.9266086822660099
+      },
+      "yolo_confidence": 0.19993378221988678,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.9995575547218323
+    },
+    {
+      "bbox": {
+        "x1": 0.028850938729534578,
+        "y1": 0.0,
+        "x2": 0.9423605376117866,
+        "y2": 0.9387578353506004
+      },
+      "yolo_confidence": 0.19252096116542816,
+      "classifier_label": "intact",
+      "classifier_confidence": 1.0
+    },
+    {
+      "bbox": {
+        "x1": 0.1330299132123254,
+        "y1": 0.4179830692084552,
+        "x2": 0.7684280542698704,
+        "y2": 0.9104120414245305
+      },
+      "yolo_confidence": 0.17069728672504425,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.8300662636756897
+    }
+  ],
+  "detection_count": 3,
+  "decision": {
+    "result": "ACCEPT",
+    "reason": "All detections classified as intact"
+  },
+  "integrity": {
+    "image_hash_sha256": "14accf1854dafd53d138d44451312e8d1a93e022537fbf8e824138bd598979a6",
+    "detection_hash_sha256": "ad010051650e4413a167f3a0eeb1e6a0bc8303bb287e94c77c6008d272f54394",
+    "decision_hash_sha256": "b14db59f5af362f41e2d43e274a36799b3252b9532cc5bb1726b0e749fa90197",
+    "record_hash_sha256": "7c5a569a10f30537c73931d0b7745c632b70e304df7099aec5b529bc79c27f02",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}

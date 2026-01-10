@@ -1,0 +1,31 @@
+{
+  "inspection_id": "INS-20260109-170003-6845",
+  "package_id": "PKG-1767978000898",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T17:00:03.684510Z",
+  "timestamp_local": "2026-01-09T22:30:03.693510",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [],
+  "detection_count": 0,
+  "decision": {
+    "result": "ACCEPT",
+    "reason": "No damage regions detected"
+  },
+  "integrity": {
+    "image_hash_sha256": "a4a2e36c06da6fa5ed62af06da708aab9b7f7be1c507212e91ce416fee68d86b",
+    "detection_hash_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "decision_hash_sha256": "14c62660c677b542bbe00d13bb0162c7c14e4fe294ba926b20e2a6f3add22c6a",
+    "record_hash_sha256": "67eece87aecd52ce7ba963cef25a5653dfee939bf2cc8ec7ee3519f3d77803c6",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}

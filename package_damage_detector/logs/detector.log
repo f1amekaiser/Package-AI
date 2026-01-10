@@ -106,3 +106,18 @@
 2026-01-09 07:51:49,974 - __main__ - INFO - Inference Time: 78.8ms
 2026-01-09 07:51:49,974 - __main__ - INFO - ============================================================
 2026-01-09 07:51:49,974 - __main__ - INFO - Cleanup complete
+2026-01-09 21:52:43,379 - src.utils.helpers - INFO - Logging configured: level=INFO
+2026-01-09 21:52:43,380 - __main__ - INFO - Package Damage Detector initializing...
+2026-01-09 21:52:43,380 - __main__ - INFO - Demo mode: True
+2026-01-09 21:52:43,380 - __main__ - INFO - Running in demo mode - no model loading required
+2026-01-09 21:52:43,380 - __main__ - INFO - ============================================================
+2026-01-09 21:52:43,380 - __main__ - INFO - INSPECTION COMPLETE: INS-20260109-215243
+2026-01-09 21:52:43,380 - __main__ - INFO - Package ID: PKG-20260109215243-1326
+2026-01-09 21:52:43,380 - __main__ - INFO - Decision: REJECT
+2026-01-09 21:52:43,380 - __main__ - INFO - Reason: Severe damage detected
+2026-01-09 21:52:43,380 - __main__ - INFO - Detections: 2
+2026-01-09 21:52:43,380 - __main__ - INFO -   1. tape_seal_damage - 🟡 MINOR (80.6%)
+2026-01-09 21:52:43,380 - __main__ - INFO -   2. compression_damage - 🔴 SEVERE (55.6%)
+2026-01-09 21:52:43,380 - __main__ - INFO - Inference Time: 62.0ms
+2026-01-09 21:52:43,380 - __main__ - INFO - ============================================================
+2026-01-09 21:52:43,380 - __main__ - INFO - Cleanup complete

@@ -1,0 +1,54 @@
+<!-- AUDIT LOGS PAGE -->
+<section class="page" id="auditPage">
+    <div class="audit-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h1>
+                    Inspection Audit Logs
+                    <div class="audit-live-indicator">
+                        <span class="pulse-dot"></span>
+                        LIVE
+                    </div>
+                </h1>
+                <div class="subtitle">Tamper-proof system activity and decision records</div>
+            </div>
+
+            <div class="audit-stats-bar" style="background: transparent; border: none; padding: 0;">
+                <div class="audit-stat">
+                    <span>Total Events:</span>
+                    <span class="audit-stat-value" id="auditTotalCount">0</span>
+                </div>
+                <div class="audit-stat">
+                    <span>Last Updated:</span>
+                    <span class="audit-stat-value" id="auditLastUpdated">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="audit-table-wrapper">
+        <table class="audit-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Package ID</th>
+                    <th>Action</th>
+                    <th>AI Decision</th>
+                    <th>Severity</th>
+                    <th>Confidence</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+            <tbody id="auditTableBody">
+                <!-- Rows injected by JS -->
+                <tr>
+                    <td colspan="7" class="audit-empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h3>No audit records yet</h3>
+                        <p>Logs will appear automatically after inspections.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

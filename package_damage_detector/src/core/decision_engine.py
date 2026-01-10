@@ -46,6 +46,87 @@ class InferenceResult:
         return len(self.detections) > 0
 
 
+def compute_severity(detections: List[Any]) -> Dict[str, Any]:
+    """
+    Calculate definitive severity based on strict confirmed damage rules.
+    Backend-authoritative logic.
+    
+    Severity bands (aligned with decision thresholds):
+    - 0-15: ACCEPT (no damage or all intact)
+    - 16-49: REVIEW_REQUIRED (borderline damage, conf 0.50-0.84)
+    - 50-100: REJECT (confirmed damage, conf >= 0.85)
+    """
+    # Step 1: Filter confirmed damages
+    confirmed_damages = []
+    
+    for det in detections:
+        # Handle different object types
+        label = getattr(det, "classifier_label", getattr(det, "class_name", "")).lower()
+        if isinstance(det, dict):
+            label = det.get("class_name", "").lower()
+            
+        if label == "damaged":
+            confirmed_damages.append(det)
+            
+    # Step 2: Severity logic based on decision thresholds
+    if not confirmed_damages:
+        # No damage detected - ACCEPT range (0-15)
+        return {
+            "severity_score": 0,
+            "severity_label": "SAFE",
+            "risk_level": "NONE"
+        }
+    
+    # Get max confidence of CONFIRMED damages only
+    max_conf = 0.0
+    for det in confirmed_damages:
+        if hasattr(det, "classifier_confidence"):
+            conf = det.classifier_confidence
+        elif hasattr(det, "confidence"):
+            conf = det.confidence
+        elif isinstance(det, dict):
+            conf = det.get("confidence", 0.0)
+        else:
+            conf = 0.0
+        max_conf = max(max_conf, conf)
+    
+    # Align severity with decision thresholds:
+    # - conf >= 0.85 (REJECT) -> severity 50-100
+    # - conf >= 0.50 (REVIEW) -> severity 16-49
+    # - conf < 0.50 (ACCEPT despite damage) -> severity 1-15
+    
+    if max_conf >= 0.85:
+        # REJECT range: 50-100
+        # Map conf 0.85-1.0 to severity 50-100
+        severity_score = int(50 + (max_conf - 0.85) / 0.15 * 50)
+        severity_score = min(100, severity_score)
+        return {
+            "severity_score": severity_score,
+            "severity_label": "HIGH",
+            "risk_level": "CRITICAL"
+        }
+    elif max_conf >= 0.50:
+        # REVIEW range: 16-49
+        # Map conf 0.50-0.84 to severity 16-49
+        severity_score = int(16 + (max_conf - 0.50) / 0.35 * 33)
+        severity_score = min(49, severity_score)
+        return {
+            "severity_score": severity_score,
+            "severity_label": "MEDIUM",
+            "risk_level": "WARNING"
+        }
+    else:
+        # Low confidence damage - still ACCEPT range: 1-15
+        # Map conf 0.0-0.49 to severity 1-15
+        severity_score = int(1 + max_conf / 0.50 * 14)
+        severity_score = min(15, severity_score)
+        return {
+            "severity_score": severity_score,
+            "severity_label": "LOW",
+            "risk_level": "MINIMAL"
+        }
+
+
 class DecisionType(Enum):
     """Final decision types for package inspection."""
     ACCEPT = auto()
@@ -386,19 +467,42 @@ class DecisionEngine:
                 rationale="No damage detected"
             )
         
-        # Find max severity
-        max_severity_score = max(d.severity_score for d in scored_detections)
-        max_severity = max((d.severity_level for d in scored_detections), key=lambda s: s.value)
+        # Calculate definitive severity
+        severity_info = compute_severity(scored_detections)
+        severity_score = severity_info["severity_score"]
+        severity_label_str = severity_info["severity_label"]
         
-        # Count by severity level
+        # Map string label back to Enum
+        if severity_label_str == "HIGH":
+            max_severity = Severity.SEVERE
+        elif severity_label_str == "MEDIUM":
+            max_severity = Severity.MODERATE
+        else:
+            max_severity = Severity.MINOR  # SAFE maps to MINOR/NONE internally
+            
+        max_severity_score = float(severity_score)
+        
+        # Count by severity level (legacy support for rules below)
         severity_counts = {
             Severity.MINOR: 0,
             Severity.MODERATE: 0,
             Severity.SEVERE: 0,
         }
+        
+        # Use new definitive severity to populate counts
         for d in scored_detections:
-            if d.severity_level in severity_counts:
-                severity_counts[d.severity_level] += 1
+            if d.detection.class_name == "damaged":
+                # Re-evaluate individual severity using the definitive logic if needed
+                # For now, we rely on the overall package severity
+                pass
+        
+        # Update counts based on the definitive result
+        if max_severity == Severity.SEVERE:
+            severity_counts[Severity.SEVERE] = 1
+        elif max_severity == Severity.MODERATE:
+            severity_counts[Severity.MODERATE] = 1
+        elif severity_score > 0:
+             severity_counts[Severity.MINOR] = 1
         
         # Apply decision rules
         decision_type = DecisionType.ACCEPT

@@ -1,0 +1,43 @@
+{
+  "inspection_id": "INS-20260109-124037-8077",
+  "package_id": "PKG-8609",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T12:40:37.807755Z",
+  "timestamp_local": "2026-01-09T18:10:37.811967",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [
+    {
+      "bbox": {
+        "x1": 0.08277359110786316,
+        "y1": 8.468976303867009e-05,
+        "x2": 0.824510298948237,
+        "y2": 0.6675791979924729
+      },
+      "yolo_confidence": 0.08049197494983673,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.9975957274436951
+    }
+  ],
+  "detection_count": 1,
+  "decision": {
+    "result": "ACCEPT",
+    "reason": "All detections classified as intact"
+  },
+  "integrity": {
+    "image_hash_sha256": "b1d393050dd6d5bc38fc015e8c0317305450a886b0e15adab77350e2d27043ed",
+    "detection_hash_sha256": "84cc015ffe018300b019d560a7a5706834b66ad2a56755e17e8ce958b76e4e61",
+    "decision_hash_sha256": "b14db59f5af362f41e2d43e274a36799b3252b9532cc5bb1726b0e749fa90197",
+    "record_hash_sha256": "3792a302965d3cb9850222f9d1aeb6b233cad086182481508fe9e9736b7e63a2",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}

@@ -1,0 +1,98 @@
+{
+  "inspection_id": "INS-20260109-171014-0553",
+  "package_id": "PKG-1767978610520",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T17:10:14.055293Z",
+  "timestamp_local": "2026-01-09T22:40:14.083572",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [
+    {
+      "bbox": {
+        "x1": 0.3005202390966636,
+        "y1": 0.3857810003799096,
+        "x2": 0.8647015763588077,
+        "y2": 0.8584371742762235
+      },
+      "yolo_confidence": 0.16242863237857819,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.9430989623069763
+    },
+    {
+      "bbox": {
+        "x1": 0.3548983079765496,
+        "y1": 0.3947604362506819,
+        "x2": 0.688877521174969,
+        "y2": 0.7697546143186954
+      },
+      "yolo_confidence": 0.10409053415060043,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.8682843446731567
+    },
+    {
+      "bbox": {
+        "x1": 0.6414776289030271,
+        "y1": 0.6478847589278757,
+        "x2": 0.8776734607054455,
+        "y2": 0.8405609511377805
+      },
+      "yolo_confidence": 0.10018736869096756,
+      "classifier_label": "damaged",
+      "classifier_confidence": 0.9444650411605835
+    },
+    {
+      "bbox": {
+        "x1": 0.417682408499639,
+        "y1": 0.38786483346078166,
+        "x2": 0.668357773582534,
+        "y2": 0.6647735367392067
+      },
+      "yolo_confidence": 0.08580044656991959,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.915037214756012
+    },
+    {
+      "bbox": {
+        "x1": 0.7859004055312758,
+        "y1": 0.0,
+        "x2": 1.0,
+        "y2": 0.2006603630998188
+      },
+      "yolo_confidence": 0.06529376655817032,
+      "classifier_label": "damaged",
+      "classifier_confidence": 0.7827160358428955
+    },
+    {
+      "bbox": {
+        "x1": 0.6560708225363552,
+        "y1": 0.0002700328789744294,
+        "x2": 1.0,
+        "y2": 0.2307329249203651
+      },
+      "yolo_confidence": 0.060369621962308884,
+      "classifier_label": "damaged",
+      "classifier_confidence": 0.7778964638710022
+    }
+  ],
+  "detection_count": 6,
+  "decision": {
+    "result": "REJECT",
+    "reason": "1 confirmed damage(s) detected"
+  },
+  "integrity": {
+    "image_hash_sha256": "40003dfecf77719678b2feac58bfa9b6f35f11541b8a46bc19854cd596508e0d",
+    "detection_hash_sha256": "5bc03fc9b064e5b6d2348678c684f51219e4c36301d9b03bb389ac48c82aa6ec",
+    "decision_hash_sha256": "12bab30406fac5f0bd105a17fa35536c938e7dedf914c6694862bab61b380e8c",
+    "record_hash_sha256": "699e16a9affbefc475144a5d5d3d6095af07c1fd6f418d0d78077586cb949f97",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}

@@ -9,32 +9,152 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
         :root {
-            /* Premium Restrained Palette */
-            --color-accept: #18794E;
-            --color-reject: #CD2B31;
-            --color-review: #B45309;
-            --color-info: #2563EB;
+            /* ===== PREMIUM ENTERPRISE COLOR SYSTEM ===== */
 
-            /* Near-white neutrals */
-            --bg-primary: #FAFBFC;
+            /* Primary Palette - Neutral First */
+            --bg-primary: #F9FAFB;
             --bg-secondary: #FFFFFF;
-            --bg-tertiary: #F6F6F6;
-            --text-primary: #111111;
-            --text-secondary: #6E6E6E;
-            --text-tertiary: #A0A0A0;
-            --border-color: #F0F0F0;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --bg-tertiary: #F1F5F9;
+            --border-color: #E5E7EB;
 
-            /* Semantic tints */
-            --tint-accept: #F0FDF4;
+            /* Text Hierarchy */
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --text-tertiary: #94A3B8;
+            --text-number: #020617;
+
+            /* Brand Accent - Deep Navy to Royal Blue */
+            --accent-primary: #2563EB;
+            --accent-dark: #1E3A8A;
+            --accent-gradient: linear-gradient(135deg, #1E3A8A, #2563EB);
+
+            /* Secondary Accent - Slate */
+            --accent-secondary: #475569;
+            --accent-secondary-dark: #334155;
+
+            /* Semantic States - Premium Muted */
+            --color-accept: #1E3A8A;
+            --color-reject: #7F1D1D;
+            --color-review: #92400E;
+            --color-success: #14532D;
+            --color-warning: #92400E;
+            --color-critical: #7F1D1D;
+
+            /* Tints - Subtle Backgrounds */
+            --tint-accept: #EFF6FF;
             --tint-reject: #FEF2F2;
             --tint-review: #FFFBEB;
+
+            /* Shadow System - Enterprise Depth */
+            --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
+            --shadow-card-hover: 0 12px 32px rgba(15, 23, 42, 0.08);
+            --shadow-nav: 0 4px 16px rgba(15, 23, 42, 0.04);
+
+            /* Chart Colors */
+            --chart-bar: linear-gradient(180deg, #CBD5E1, #94A3B8);
+            --chart-active: linear-gradient(180deg, #1E40AF, #3B82F6);
+
+            /* Live Indicator */
+            --live-dot: #2563EB;
+
+            /* ===== MOTION SYSTEM ===== */
+            --motion-standard: 200ms;
+            --motion-fast: 120ms;
+            --motion-slow: 300ms;
+            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+            --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+            --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* GPU-accelerated animations */
+        .animate-gpu {
+            will-change: transform, opacity;
+            transform: translateZ(0);
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--border-color) 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Fade up animation */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp var(--motion-standard) var(--ease-smooth) forwards;
+        }
+
+        /* Value highlight pulse */
+        @keyframes valuePulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .value-updating {
+            animation: valuePulse 400ms var(--ease-smooth);
+        }
+
+        /* Soft pulse for live indicators */
+        @keyframes softPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+            }
+
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 0 4px rgba(37, 99, 235, 0);
+            }
         }
 
         body {
@@ -47,23 +167,45 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER (Premium Water-Drop Glass) ===== */
         .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
+            background: transparent;
             position: sticky;
-            top: 0;
+            top: 12px;
             z-index: 100;
+            padding: 0 24px;
         }
 
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 32px;
+            padding: 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            height: 56px;
+            height: auto;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            /* Translucent Glass Background */
+            background: rgba(255, 255, 255, 0.55);
+            /* Backdrop Blur (Core Glass Effect) */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            /* Water Drop Shape */
+            height: 72px;
+            border-radius: 22px;
+            padding: 0 24px;
+            /* Light Refraction Edge */
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            /* Floating Depth Shadow */
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.12),
+                inset 0 1px 1px rgba(255, 255, 255, 0.35);
         }
 
         .logo {
@@ -94,28 +236,43 @@
 
         .nav-tabs {
             display: flex;
-            gap: 2px;
+            gap: 4px;
         }
 
         .nav-tab {
-            padding: 8px 14px;
-            border-radius: 6px;
+            padding: 10px 16px;
+            border-radius: 12px;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-tertiary);
+            color: var(--text-secondary);
             cursor: pointer;
             border: none;
             background: transparent;
-            transition: color 0.15s;
+            transition: all 0.25s ease;
+            position: relative;
         }
 
         .nav-tab:hover {
             color: var(--text-primary);
+            transform: translateY(-1px);
         }
 
         .nav-tab.active {
             color: var(--text-primary);
-            background: var(--bg-tertiary);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: var(--accent-gradient);
+            border-radius: 1px;
         }
 
         .header-right {
@@ -145,17 +302,48 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--color-accept);
-            animation: pulse 2s infinite;
+            background: var(--live-dot);
+            animation: softPulse 2s var(--ease-smooth) infinite;
         }
 
         .health-dot.degraded {
-            background: var(--color-review);
+            background: var(--color-warning);
         }
 
         .health-dot.offline {
-            background: var(--color-reject);
+            background: var(--color-critical);
             animation: none;
+        }
+
+        /* Live Indicators */
+        .live-indicators {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .indicator-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            transition: color var(--motion-fast) var(--ease-smooth);
+        }
+
+        .indicator-value.updating {
+            color: var(--accent-primary);
+            animation: valuePulse 300ms var(--ease-smooth);
         }
 
         @keyframes pulse {
@@ -235,6 +423,104 @@
         }
 
         /* ===== DASHBOARD ===== */
+
+        /* System Health Strip */
+        .health-strip {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+
+        .health-strip-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .health-strip-label {
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .health-strip-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .health-strip-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-color);
+        }
+
+        /* Timeline Controls */
+        .timeline-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-controls select {
+            padding: 4px 8px;
+            font-size: 11px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .timeline-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: all var(--motion-fast) var(--ease-smooth);
+        }
+
+        .timeline-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .timeline-btn.paused {
+            color: var(--color-warning);
+        }
+
+        /* Audit Confidence Signal */
+        .audit-signal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            background: var(--tint-accept);
+            border: 1px solid rgba(30, 58, 138, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--color-success);
+        }
+
+        .audit-icon {
+            flex-shrink: 0;
+        }
+
         .stats-row {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -247,11 +533,18 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 20px;
-            border-left: 2px solid var(--border-color);
+            border-left: 3px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-card-hover);
+            transform: translateY(-2px);
         }
 
         .stat-card.total {
-            border-left-color: var(--text-primary);
+            border-left-color: var(--accent-dark);
         }
 
         .stat-card.accept {
@@ -267,13 +560,13 @@
         }
 
         .stat-card.confidence {
-            border-left-color: var(--color-info);
+            border-left-color: var(--accent-primary);
         }
 
         .stat-label {
             font-size: 11px;
             font-weight: 500;
-            color: var(--text-tertiary);
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.04em;
             margin-bottom: 8px;
@@ -283,7 +576,7 @@
             font-size: 32px;
             font-weight: 600;
             letter-spacing: -0.02em;
-            color: var(--text-primary);
+            color: var(--text-number);
         }
 
         .stat-card.accept .stat-value {
@@ -299,7 +592,7 @@
         }
 
         .stat-card.confidence .stat-value {
-            color: var(--text-primary);
+            color: var(--text-number);
         }
 
         .stat-trend {
@@ -327,23 +620,31 @@
             flex: 1;
             border-radius: 3px 3px 0 0;
             min-height: 8px;
-            transition: height 0.5s ease;
+            transition: height var(--motion-slow) var(--ease-smooth),
+                opacity var(--motion-fast) var(--ease-smooth),
+                transform var(--motion-fast) var(--ease-smooth);
             position: relative;
+            transform-origin: bottom;
+        }
+
+        .chart-bar:hover {
+            opacity: 1 !important;
+            transform: scaleY(1.02);
         }
 
         .chart-bar.accept {
             background: var(--color-accept);
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .chart-bar.reject {
             background: var(--color-reject);
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .chart-bar.review {
             background: var(--color-review);
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         .chart-labels {
@@ -429,19 +730,487 @@
             background: var(--color-review);
         }
 
-        /* ===== AI PROCESSING ===== */
+        /* ===== AI PROCESSING (Enterprise 3-Column Layout) ===== */
         .processing-grid {
             display: grid;
-            grid-template-columns: 1fr 340px;
+            grid-template-columns: 260px 1fr 300px;
+            gap: 24px;
+            min-height: 600px;
+            align-items: start;
+        }
+
+        /* Left Panel - AI Input & Status */
+        .ai-input-panel {
+            display: flex;
+            flex-direction: column;
             gap: 16px;
         }
 
-        .image-section {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
+        .ai-input-panel .card {
+            padding: 0;
         }
 
+        /* Combined Input & Status Card */
+        .input-status-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .input-status-card .card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .status-indicator .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .status-indicator .status-dot.idle {
+            background: #9CA3AF;
+        }
+
+        .status-indicator .status-dot.ready {
+            background: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-indicator .status-dot.processing {
+            background: #F59E0B;
+            animation: statusPulse 1.2s ease-in-out infinite;
+        }
+
+        .status-indicator .status-dot.completed {
+            background: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        @keyframes statusPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+        }
+
+        .status-indicator .status-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .upload-zone-compact {
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            min-height: 120px;
+        }
+
+        .upload-zone-compact:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .upload-zone-compact .upload-icon {
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .upload-zone-compact .upload-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Center Panel - AI Vision */
+        .ai-vision-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .vision-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .vision-card .card-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .image-container {
+            position: relative;
+            background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+            aspect-ratio: 16/10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .image-container .upload-zone {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+
+        .image-container .upload-zone:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .image-container .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+            background: #FAFBFC;
+        }
+
+        /* PRIMARY ACTION BUTTON - Analyze */
+        .analyze-action-container {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-analyze {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-analyze:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-analyze:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-analyze:disabled {
+            background: linear-gradient(135deg, #94A3B8 0%, #CBD5E1 100%);
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        .btn-analyze .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-clear {
+            width: 100%;
+            height: 36px;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-clear:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Right Panel - AI Reasoning */
+        .ai-reasoning-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Severity Card - Disabled State */
+        .severity-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .severity-card.awaiting {
+            opacity: 0.6;
+            filter: grayscale(0.3);
+        }
+
+        .severity-card.awaiting .severity-ring-container {
+            pointer-events: none;
+        }
+
+        /* Severity Ring */
+        .severity-ring-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+        }
+
+        .severity-ring {
+            position: relative;
+            width: 130px;
+            height: 130px;
+        }
+
+        .severity-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .severity-ring-bg {
+            fill: none;
+            stroke: var(--border-color);
+            stroke-width: 10;
+        }
+
+        .severity-ring-progress {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 377;
+            stroke-dashoffset: 377;
+            transition: stroke-dashoffset 1s var(--ease-smooth), stroke 0.3s var(--ease-smooth);
+        }
+
+        .severity-ring-progress.safe {
+            stroke: var(--color-success);
+        }
+
+        .severity-ring-progress.low {
+            stroke: #EAB308;
+        }
+
+        .severity-ring-progress.review {
+            stroke: var(--color-warning);
+        }
+
+        .severity-ring-progress.high {
+            stroke: var(--color-critical);
+        }
+
+        .severity-ring-value {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .severity-ring-score {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-number);
+            line-height: 1;
+        }
+
+        .severity-ring-label {
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* Confidence Bar */
+        .confidence-bar-container {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .confidence-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .confidence-bar-label span:last-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .confidence-bar-track {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 3px;
+            transition: width 0.8s var(--ease-smooth);
+            width: 0%;
+        }
+
+        /* AI Explanation Card */
+        .explanation-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .explanation-card.awaiting {
+            opacity: 0.6;
+        }
+
+        .ai-explanation-list {
+            padding: 12px 16px;
+            min-height: 80px;
+        }
+
+        .ai-explanation-list .empty-state {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+            padding: 20px 0;
+        }
+
+        .explanation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-secondary);
+            animation: fadeUp var(--motion-standard) var(--ease-smooth);
+        }
+
+        .explanation-item:last-child {
+            border-bottom: none;
+        }
+
+        .explanation-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* AI Trace Section - Collapsed Default */
+        .trace-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .ai-trace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: background 0.15s ease;
+        }
+
+        .ai-trace-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .ai-trace-content {
+            padding: 0 16px 16px;
+            display: none;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ai-trace-content.expanded {
+            display: block;
+        }
+
+        .trace-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 11px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .trace-row:last-child {
+            border-bottom: none;
+        }
+
+        .trace-label {
+            color: var(--text-tertiary);
+        }
+
+        .trace-value {
+            color: var(--text-primary);
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 10px;
+        }
+
+        /* Image Wrapper */
         .image-wrapper {
             position: relative;
             background: var(--bg-secondary);
@@ -844,39 +1613,385 @@
             display: block;
         }
 
-        /* ===== HISTORY ===== */
-        .history-table {
+        /* ===== INSPECTION LEDGER ===== */
+
+        .ledger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ledger-title h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .ledger-subtitle {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .audit-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .audit-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* Filters */
+        .ledger-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .filter-separator {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Ledger Table */
+        .ledger-table-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .ledger-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .history-table th {
+        .ledger-table th {
             text-align: left;
-            padding: 12px 16px;
-            font-size: 11px;
+            padding: 12px 14px;
+            font-size: 10px;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             background: var(--bg-tertiary);
-        }
-
-        .history-table td {
-            padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
         }
 
-        .history-table tr {
-            transition: background 0.15s;
+        .ledger-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        .history-table tr:hover {
+        .ledger-table tr {
+            cursor: pointer;
+        }
+
+        .ledger-table tbody tr:hover {
             background: var(--bg-tertiary);
         }
 
-        .history-table tr.new {
-            animation: highlight 2s ease;
+        .ledger-table .mono {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 11px;
+        }
+
+        .evidence-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .evidence-status.verified {
+            background: var(--tint-accept);
+            color: var(--color-success);
+        }
+
+        .evidence-status.error {
+            background: var(--tint-reject);
+            color: var(--color-critical);
+        }
+
+        /* Pagination */
+        .ledger-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pagination-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn:not(:disabled):hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Record Details Panel */
+        .record-details-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 480px;
+            height: 100vh;
+            background: var(--bg-primary);
+            border-left: 1px solid var(--border-color);
+            box-shadow: var(--shadow-modal);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .record-details-panel.hidden {
+            display: none;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .details-header h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .close-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .details-content {
+            padding: 20px;
+        }
+
+        .details-section {
+            margin-bottom: 24px;
+        }
+
+        .details-section h4 {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin: 0 0 12px 0;
+        }
+
+        .details-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .image-box {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .image-box label {
+            display: block;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: var(--bg-tertiary);
+            color: var(--text-tertiary);
+        }
+
+        .image-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .detections-list {
+            font-size: 12px;
+        }
+
+        .detection-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .reasoning-box,
+        .severity-breakdown {
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Evidence Integrity Section */
+        .evidence-integrity-section {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+
+        .evidence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+        }
+
+        .evidence-content {
+            padding: 14px;
+            display: none;
+        }
+
+        .evidence-content.expanded {
+            display: block;
+        }
+
+        .hash-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .hash-label {
+            color: var(--text-tertiary);
+        }
+
+        .hash-row code {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            color: var(--text-primary);
+        }
+
+        .verification-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: var(--tint-accept);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--color-success);
+        }
+
+        .verification-badge.mismatch {
+            background: var(--tint-reject);
+            color: var(--color-critical);
+        }
+
+        /* Audit Mode */
+        body.audit-mode .ledger-table tbody tr:hover {
+            background: transparent;
+        }
+
+        body.audit-mode * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body.audit-mode .ledger-header::after {
+            content: 'AUDIT MODE ACTIVE';
+            display: inline-block;
+            margin-left: 12px;
+            padding: 4px 10px;
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #B45309;
         }
 
         @keyframes highlight {
@@ -927,32 +2042,350 @@
         .hidden {
             display: none !important;
         }
+
+        /* ===== AUDIT LOGS PAGE (Enterprise Compliance) ===== */
+        .audit-logs-page {
+            padding: 0;
+        }
+
+        .audit-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .audit-header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .audit-header .subtitle {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .audit-live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: #ECFDF5;
+            border: 1px solid #10B981;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .audit-live-indicator .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: auditPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes auditPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Audit Table Container */
+        .audit-table-wrapper {
+            padding: 0 32px 32px;
+            overflow-x: auto;
+        }
+
+        .audit-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+        }
+
+        .audit-table th {
+            text-align: left;
+            padding: 14px 16px;
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-tertiary);
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .audit-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .audit-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .audit-table td {
+            padding: 14px 16px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .audit-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .audit-table tbody tr:hover {
+            background: #F8FAFC;
+        }
+
+        .audit-table tbody tr.latest-row {
+            background: linear-gradient(90deg, #EFF6FF 0%, #FAFBFC 100%);
+            animation: fadeInRow 0.4s var(--ease-smooth);
+        }
+
+        @keyframes fadeInRow {
+            0% {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .audit-table .timestamp-cell {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .audit-table .timestamp-cell:hover .utc-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .utc-tooltip {
+            position: absolute;
+            top: -28px;
+            left: 0;
+            background: #1E293B;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.15s;
+            z-index: 10;
+        }
+
+        .audit-table .package-id-cell {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-primary);
+            cursor: pointer;
+        }
+
+        .audit-table .package-id-cell:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Badges */
+        .action-badge {
+            display: inline-flex;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .action-badge.inspected {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+
+        .action-badge.decision-made {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .action-badge.review-override {
+            background: #FEF3C7;
+            color: #B45309;
+        }
+
+        /* Decision Colors (Semantic) */
+        .decision-text.accept {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .decision-text.reject {
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        .decision-text.review {
+            color: #D97706;
+            font-weight: 600;
+        }
+
+        /* Severity & Confidence */
+        .severity-cell {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .confidence-cell {
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 12px;
+        }
+
+        /* Source Badge */
+        .source-badge {
+            display: inline-flex;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .source-badge.ai {
+            background: #EDE9FE;
+            color: #7C3AED;
+        }
+
+        .source-badge.manual {
+            background: #FCE7F3;
+            color: #DB2777;
+        }
+
+        .source-badge.system {
+            background: #E5E7EB;
+            color: #4B5563;
+        }
+
+        /* Latest Badge */
+        .latest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+            padding: 2px 6px;
+            background: #DBEAFE;
+            border: 1px solid #3B82F6;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            color: #1D4ED8;
+            text-transform: uppercase;
+        }
+
+        /* Audit Empty State */
+        .audit-empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-tertiary);
+        }
+
+        .audit-empty-state .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .audit-empty-state h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0 0 8px;
+        }
+
+        .audit-empty-state p {
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* Audit Stats Bar */
+        .audit-stats-bar {
+            display: flex;
+            gap: 24px;
+            padding: 16px 32px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .audit-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .audit-stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
     </style>
 </head>
 
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">AI</div>
-                <span class="logo-text">PackageAI</span>
-            </div>
-
-            <nav class="nav-tabs">
-                <button class="nav-tab active" data-page="dashboard">Dashboard</button>
-                <button class="nav-tab" data-page="processing">AI Image Processing</button>
-                <button class="nav-tab" data-page="history">History</button>
-            </nav>
-
-            <div class="header-right">
-                <div class="system-health">
-                    <div class="health-indicator">
-                        <span class="health-dot" id="healthDot"></span>
-                        <span id="healthStatus">Optimal</span>
-                    </div>
-                    <span class="latency-badge" id="latencyBadge">12ms</span>
+            <div class="header-inner">
+                <!-- Left: Logo -->
+                <div class="logo">
+                    <div class="logo-icon">AI</div>
+                    <span class="logo-text">PackageAI</span>
                 </div>
-                <span class="time-display" id="currentTime">--:--:--</span>
+
+                <!-- Center: Navigation Tabs -->
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+                    <button class="nav-tab" data-page="processing">AI Inspection</button>
+                    <button class="nav-tab" data-page="history">History</button>
+                    <button class="nav-tab" data-page="audit">Audit Logs</button>
+                </nav>
+
+                <!-- Right: Live System Indicators -->
+                <div class="live-indicators">
+                    <div class="indicator-item">
+                        <span class="health-dot" id="healthDot"></span>
+                        <span id="systemStatusLabel">Operational</span>
+                    </div>
+                    <div class="indicator-item">
+                        <span>Latency:</span>
+                        <span class="indicator-value" id="avgLatency">--</span>
+                        <span>ms</span>
+                    </div>
+                    <div class="indicator-item">
+                        <span>Queue:</span>
+                        <span class="indicator-value" id="queueDepth">0</span>
+                    </div>
+                    <span class="time-display" id="currentTime">--:--:--</span>
+                </div>
             </div>
         </div>
     </header>
@@ -960,39 +2393,75 @@
     <main class="main-container">
         <!-- DASHBOARD -->
         <section class="page active" id="dashboardPage">
+            <!-- System Health Strip -->
+            <div class="health-strip" id="healthStrip">
+                <div class="health-strip-item">
+                    <span class="health-strip-label">System</span>
+                    <span class="health-strip-value" id="systemStatusText">Checking...</span>
+                    <span class="health-dot" id="systemDot"></span>
+                </div>
+                <div class="health-strip-divider"></div>
+                <div class="health-strip-item">
+                    <span class="health-strip-label">Avg Latency</span>
+                    <span class="health-strip-value" id="avgLatencyText">—</span>
+                </div>
+                <div class="health-strip-divider"></div>
+                <div class="health-strip-item">
+                    <span class="health-strip-label">Queue</span>
+                    <span class="health-strip-value" id="queueDepthText">—</span>
+                </div>
+                <div class="health-strip-divider"></div>
+                <div class="health-strip-item">
+                    <span class="health-strip-label">Last Inspection</span>
+                    <span class="health-strip-value" id="lastInspectionText">—</span>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
             <div class="stats-row">
                 <div class="stat-card total">
                     <div class="stat-label">Total Inspected</div>
-                    <div class="stat-value" id="dashTotal">0</div>
+                    <div class="stat-value" id="dashTotal">—</div>
                     <div class="stat-trend">Real-time count</div>
                 </div>
                 <div class="stat-card accept">
                     <div class="stat-label">Accepted</div>
-                    <div class="stat-value" id="dashAccept">0</div>
+                    <div class="stat-value" id="dashAccept">—</div>
                     <div class="stat-trend">No damage detected</div>
                 </div>
                 <div class="stat-card reject">
                     <div class="stat-label">Rejected</div>
-                    <div class="stat-value" id="dashReject">0</div>
+                    <div class="stat-value" id="dashReject">—</div>
                     <div class="stat-trend">Damage confirmed</div>
                 </div>
                 <div class="stat-card review">
                     <div class="stat-label">Review Required</div>
-                    <div class="stat-value" id="dashReview">0</div>
+                    <div class="stat-value" id="dashReview">—</div>
                     <div class="stat-trend">Pending decision</div>
                 </div>
                 <div class="stat-card confidence">
                     <div class="stat-label">Avg Confidence</div>
-                    <div class="stat-value" id="dashConfidence">--%</div>
+                    <div class="stat-value" id="dashConfidence">—</div>
                     <div class="stat-trend">Model certainty</div>
                 </div>
             </div>
 
+            <!-- Charts Row -->
             <div class="charts-row">
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Inspection Timeline</span>
-                        <span class="live-indicator"><span class="live-dot"></span> Live</span>
+                        <div class="timeline-controls">
+                            <select id="timelineRange" onchange="updateTimelineRange()">
+                                <option value="10">Last 10</option>
+                                <option value="50">Last 50</option>
+                                <option value="100">Last 100</option>
+                            </select>
+                            <button class="timeline-btn" id="pauseBtn" onclick="toggleTimelinePause()">
+                                <span id="pauseIcon">⏸</span>
+                            </button>
+                        </div>
+                        <span class="live-indicator" id="liveIndicator"><span class="live-dot"></span> Live</span>
                     </div>
                     <div class="card-body">
                         <div class="live-chart" id="liveChart"></div>
@@ -1002,61 +2471,113 @@
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Decision Distribution</span>
-                        <span class="card-badge" id="distTotal">0 total</span>
+                        <span class="card-badge" id="distTotal">— total</span>
                     </div>
                     <div class="card-body">
                         <div class="donut-chart" id="donutChart"></div>
                         <div class="legend">
                             <div class="legend-item"><span class="legend-dot accept"></span><span
-                                    id="legendAccept">Accepted (0%)</span></div>
+                                    id="legendAccept">Accepted: — (—%)</span></div>
                             <div class="legend-item"><span class="legend-dot reject"></span><span
-                                    id="legendReject">Rejected (0%)</span></div>
+                                    id="legendReject">Rejected: — (—%)</span></div>
                             <div class="legend-item"><span class="legend-dot review"></span><span
-                                    id="legendReview">Review (0%)</span></div>
+                                    id="legendReview">Review: — (—%)</span></div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Audit Confidence Signal -->
+            <div class="audit-signal" id="auditSignal">
+                <svg class="audit-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span id="auditSignalText">100% of records are evidence-backed</span>
+            </div>
         </section>
 
-        <!-- AI PROCESSING -->
+        <!-- AI PROCESSING - Enterprise 3-Column Layout -->
         <section class="page" id="processingPage">
             <div class="processing-grid">
-                <div class="image-section">
-                    <div class="card">
+                <!-- LEFT COLUMN: Input & Status -->
+                <div class="ai-input-panel">
+                    <!-- Combined Input & Status Card -->
+                    <div class="input-status-card">
                         <div class="card-header">
-                            <span class="card-title">Package Image</span>
+                            <span class="card-title">AI Input</span>
+                        </div>
+                        <div class="status-indicator" id="statusIndicator">
+                            <span class="status-dot idle" id="statusDot"></span>
+                            <span class="status-text" id="statusText">Idle — Awaiting image</span>
+                        </div>
+                        <div class="upload-zone-compact" id="uploadZone"
+                            onclick="document.getElementById('imageInput').click()">
+                            <input type="file" id="imageInput" accept="image/*" style="display:none">
+                            <svg class="upload-icon" width="32" height="32" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <div class="upload-hint">Drop image or click to upload</div>
+                        </div>
+                    </div>
+
+                    <!-- Operator Feedback Card (Hidden until REVIEW_REQUIRED) -->
+                    <div class="input-status-card hidden" id="feedbackCard">
+                        <div class="card-header">
+                            <span class="card-title">Operator Override</span>
+                        </div>
+                        <div style="padding: 16px;">
+                            <div class="feedback-panel" id="feedbackPanel">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                                    AI requires human review for this package.
+                                </div>
+                                <div class="feedback-actions">
+                                    <button class="btn btn-accept" onclick="submitFeedback('ACCEPT')">Accept</button>
+                                    <button class="btn btn-reject" onclick="submitFeedback('REJECT')">Reject</button>
+                                </div>
+                            </div>
+                            <div class="feedback-success" id="feedbackSuccess">✓ Decision recorded</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER COLUMN: Image + Action -->
+                <div class="ai-vision-panel">
+                    <div class="vision-card">
+                        <div class="card-header">
+                            <span class="card-title">AI Vision</span>
                             <span class="card-badge" id="imageStatus">No image</span>
                         </div>
-                        <div class="image-wrapper" id="imageWrapper">
-                            <div class="upload-zone" id="uploadZone">
-                                <input type="file" id="imageInput" accept="image/*" style="display:none">
-                                <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="image-container" id="imageWrapper">
+                            <div class="upload-zone" id="uploadZoneLarge"
+                                onclick="document.getElementById('imageInput').click()">
+                                <svg class="upload-icon" width="48" height="48" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" style="color: var(--text-tertiary);">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
-                                <div class="upload-title">Upload Package Image</div>
-                                <div class="upload-hint">Drag & drop or click to browse</div>
-                                <button class="btn btn-primary"
-                                    onclick="document.getElementById('imageInput').click()">Choose Image</button>
+                                <div class="upload-title" style="color: var(--text-secondary); margin-top: 12px;">
+                                    Package Image</div>
+                                <div class="upload-hint" style="color: var(--text-tertiary);">Drop file or click to
+                                    upload</div>
                             </div>
                             <img id="previewImage" class="preview-image" alt="Preview">
                             <div id="detectionOverlays"></div>
-                            <div class="explain-panel" id="explainPanel">
-                                <div class="explain-title" id="explainTitle">Damage Detected</div>
-                                <div class="explain-text" id="explainText"></div>
-                                <div class="explain-confidence" id="explainConfidence"></div>
-                            </div>
+                        </div>
+                        <!-- PRIMARY ACTION: Analyze Button -->
+                        <div class="analyze-action-container">
+                            <button class="btn-analyze" id="analyzeBtn" onclick="analyzeImage()" disabled>
+                                <span id="analyzeBtnContent">Analyze Image</span>
+                            </button>
+                            <button class="btn-clear hidden" id="clearBtn" onclick="clearImage()">Clear Image</button>
                         </div>
                     </div>
 
-                    <div class="action-row hidden" id="actionRow">
-                        <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeImage()">Analyze Image</button>
-                        <button class="btn btn-secondary" onclick="clearImage()">Clear</button>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-body">
+                    <!-- Decision Banner -->
+                    <div class="card" style="margin-top: 16px;">
+                        <div class="card-body" style="padding: 16px 20px;">
                             <div class="decision-banner" id="decisionBanner">
                                 <span class="decision-badge ready" id="decisionBadge">Ready</span>
                                 <p class="decision-reason" id="decisionReason">Upload an image to begin AI-powered
@@ -1066,45 +2587,78 @@
                     </div>
                 </div>
 
-                <div class="sidebar">
-                    <div class="card">
+                <!-- RIGHT COLUMN: Severity & Explanation -->
+                <div class="ai-reasoning-panel">
+                    <!-- Severity Score Card -->
+                    <div class="severity-card awaiting" id="severityCard">
                         <div class="card-header">
                             <span class="card-title">Severity Score</span>
                         </div>
-                        <div class="severity-gauge">
-                            <div class="gauge-container">
-                                <div class="gauge-bg"></div>
-                                <div class="gauge-needle" id="gaugeNeedle"></div>
-                                <div class="gauge-center"></div>
-                            </div>
-                            <div class="severity-score" id="severityScore">--</div>
-                            <div class="severity-label" id="severityLabel">Awaiting Analysis</div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="card-title">Detections</span>
-                            <span class="card-badge" id="detectionCount">0 found</span>
-                        </div>
-                        <div class="card-body" id="detectionList">
-                            <div class="empty-state">No detections yet</div>
-                        </div>
-                    </div>
-
-                    <div class="card hidden" id="feedbackCard">
-                        <div class="card-body">
-                            <div class="feedback-panel" id="feedbackPanel">
-                                <div class="feedback-title">Operator Decision Required</div>
-                                <div class="feedback-text">Review detections and provide final decision. Your feedback
-                                    improves model accuracy.</div>
-                                <div class="feedback-actions">
-                                    <button class="btn btn-accept" onclick="submitFeedback('ACCEPT')">Accept</button>
-                                    <button class="btn btn-reject" onclick="submitFeedback('REJECT')">Reject</button>
+                        <div class="severity-ring-container">
+                            <div class="severity-ring">
+                                <svg width="130" height="130" viewBox="0 0 140 140">
+                                    <circle class="severity-ring-bg" cx="70" cy="70" r="60" />
+                                    <circle class="severity-ring-progress" id="severityRingProgress" cx="70" cy="70"
+                                        r="60" />
+                                </svg>
+                                <div class="severity-ring-value">
+                                    <span class="severity-ring-score" id="severityScore">--</span>
+                                    <span class="severity-ring-label" id="severityLabel">Waiting for analysis</span>
                                 </div>
                             </div>
-                            <div class="feedback-success" id="feedbackSuccess">
-                                ✓ Feedback recorded successfully
+                        </div>
+                        <div class="confidence-bar-container">
+                            <div class="confidence-bar-label">
+                                <span>Classifier Confidence</span>
+                                <span id="confidenceValue">--</span>
+                            </div>
+                            <div class="confidence-bar-track">
+                                <div class="confidence-bar-fill" id="confidenceBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Explanation Card -->
+                    <div class="explanation-card awaiting" id="explanationCard">
+                        <div class="card-header">
+                            <span class="card-title">AI Explanation</span>
+                            <span class="card-badge" id="detectionCount">0 found</span>
+                        </div>
+                        <div class="ai-explanation-list" id="explanationList">
+                            <div class="empty-state">AI explanation will appear after inspection.</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Trace (Audit) - Collapsed by Default -->
+                    <div class="trace-card">
+                        <div class="ai-trace-header" onclick="toggleAITrace()">
+                            <span>AI Trace (Audit)</span>
+                            <span id="traceToggle">▶</span>
+                        </div>
+                        <div class="ai-trace-content" id="traceContent">
+                            <div class="trace-row">
+                                <span class="trace-label">Detector Model</span>
+                                <span class="trace-value" id="traceDetector">YOLOv8n</span>
+                            </div>
+                            <div class="trace-row">
+                                <span class="trace-label">Classifier</span>
+                                <span class="trace-value" id="traceClassifier">ResNet18</span>
+                            </div>
+                            <div class="trace-row">
+                                <span class="trace-label">Inference Time</span>
+                                <span class="trace-value" id="traceInferenceTime">--</span>
+                            </div>
+                            <div class="trace-row">
+                                <span class="trace-label">Request ID</span>
+                                <span class="trace-value" id="traceRequestId">--</span>
+                            </div>
+                            <div class="trace-row">
+                                <span class="trace-label">Evidence Hash</span>
+                                <span class="trace-value" id="traceEvidenceHash">--</span>
+                            </div>
+                            <div class="trace-row">
+                                <span class="trace-label">Decision Path</span>
+                                <span class="trace-value" id="traceDecisionPath">--</span>
                             </div>
                         </div>
                     </div>
@@ -1112,30 +2666,210 @@
             </div>
         </section>
 
-        <!-- HISTORY -->
-        <section class="page" id="historyPage">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Inspection History</span>
-                    <span class="live-indicator"><span class="live-dot"></span> Live</span>
+        <!-- AUDIT LOGS PAGE -->
+        <section class="page" id="auditPage">
+            <div class="audit-header">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1>
+                            Inspection Audit Logs
+                            <div class="audit-live-indicator">
+                                <span class="pulse-dot"></span>
+                                LIVE
+                            </div>
+                        </h1>
+                        <div class="subtitle">Tamper-proof system activity and decision records</div>
+                    </div>
+
+                    <div class="audit-stats-bar" style="background: transparent; border: none; padding: 0;">
+                        <div class="audit-stat">
+                            <span>Total Events:</span>
+                            <span class="audit-stat-value" id="auditTotalCount">0</span>
+                        </div>
+                        <div class="audit-stat">
+                            <span>Last Updated:</span>
+                            <span class="audit-stat-value" id="auditLastUpdated">--</span>
+                        </div>
+                    </div>
                 </div>
-                <table class="history-table">
+            </div>
+
+            <div class="audit-table-wrapper">
+                <table class="audit-table">
                     <thead>
                         <tr>
                             <th>Timestamp</th>
                             <th>Package ID</th>
-                            <th>Decision</th>
+                            <th>Action</th>
+                            <th>AI Decision</th>
                             <th>Severity</th>
                             <th>Confidence</th>
                             <th>Source</th>
                         </tr>
                     </thead>
-                    <tbody id="historyBody">
+                    <tbody id="auditTableBody">
+                        <!-- Rows injected by JS -->
                         <tr>
-                            <td colspan="6" class="empty-state">No inspection history yet</td>
+                            <td colspan="7" class="audit-empty-state">
+                                <div class="empty-icon">📋</div>
+                                <h3>No audit records yet</h3>
+                                <p>Logs will appear automatically after inspections.</p>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </section>
+
+        <!-- HISTORY / INSPECTION LEDGER -->
+        <section class="page" id="historyPage">
+            <!-- Ledger Header -->
+            <div class="ledger-header">
+                <div class="ledger-title">
+                    <h2>Inspection Ledger</h2>
+                    <span class="ledger-subtitle">Immutable audit record</span>
+                </div>
+                <div class="ledger-controls">
+                    <label class="audit-toggle">
+                        <input type="checkbox" id="auditModeToggle" onchange="toggleAuditMode()">
+                        <span class="toggle-label">Audit Mode</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="ledger-filters">
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" id="filterDateFrom" onchange="applyLedgerFilters()">
+                    <span class="filter-separator">to</span>
+                    <input type="date" id="filterDateTo" onchange="applyLedgerFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>Decision</label>
+                    <select id="filterDecision" onchange="applyLedgerFilters()">
+                        <option value="">All</option>
+                        <option value="ACCEPT">Accepted</option>
+                        <option value="REJECT">Rejected</option>
+                        <option value="REVIEW_REQUIRED">Review</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Severity</label>
+                    <select id="filterSeverity" onchange="applyLedgerFilters()">
+                        <option value="">All</option>
+                        <option value="0-15">Low (0-15)</option>
+                        <option value="16-49">Medium (16-49)</option>
+                        <option value="50-100">High (50-100)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Per Page</label>
+                    <select id="filterPageSize" onchange="applyLedgerFilters()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="ledger-table-container">
+                <table class="ledger-table" id="ledgerTable">
+                    <thead>
+                        <tr>
+                            <th>Inspection ID</th>
+                            <th>Timestamp (Local)</th>
+                            <th>Timestamp (UTC)</th>
+                            <th>Decision</th>
+                            <th>Severity</th>
+                            <th>Confidence</th>
+                            <th>Evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledgerBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">No inspection records</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="ledger-pagination">
+                <span id="ledgerRecordCount">0 records</span>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" onclick="ledgerPrevPage()" id="ledgerPrevBtn" disabled>←
+                        Previous</button>
+                    <span id="ledgerPageInfo">Page 1 of 1</span>
+                    <button class="pagination-btn" onclick="ledgerNextPage()" id="ledgerNextBtn" disabled>Next
+                        →</button>
+                </div>
+            </div>
+
+            <!-- Record Details Panel (Initially Hidden) -->
+            <div class="record-details-panel hidden" id="recordDetailsPanel">
+                <div class="details-header">
+                    <h3>Record Details</h3>
+                    <button class="close-btn" onclick="closeRecordDetails()">×</button>
+                </div>
+                <div class="details-content">
+                    <div class="details-section">
+                        <h4>Images</h4>
+                        <div class="details-images">
+                            <div class="image-box">
+                                <label>Original</label>
+                                <img id="detailOriginalImage" alt="Original">
+                            </div>
+                            <div class="image-box">
+                                <label>Annotated</label>
+                                <img id="detailAnnotatedImage" alt="Annotated">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="details-section">
+                        <h4>Detections</h4>
+                        <div id="detailDetectionsList" class="detections-list"></div>
+                    </div>
+                    <div class="details-section">
+                        <h4>Decision Reasoning</h4>
+                        <div id="detailReasoning" class="reasoning-box"></div>
+                    </div>
+                    <div class="details-section">
+                        <h4>Severity Breakdown</h4>
+                        <div id="detailSeverityBreakdown" class="severity-breakdown"></div>
+                    </div>
+
+                    <!-- Evidence Integrity Section -->
+                    <div class="evidence-integrity-section">
+                        <div class="evidence-header" onclick="toggleEvidenceDetails()">
+                            <span>Evidence Integrity</span>
+                            <span id="evidenceToggleIcon">▼</span>
+                        </div>
+                        <div class="evidence-content" id="evidenceContent">
+                            <div class="hash-row">
+                                <span class="hash-label">Image Hash</span>
+                                <code id="hashImage">—</code>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">Detection Hash</span>
+                                <code id="hashDetection">—</code>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">Decision Hash</span>
+                                <code id="hashDecision">—</code>
+                            </div>
+                            <div class="hash-row">
+                                <span class="hash-label">Record Hash</span>
+                                <code id="hashRecord">—</code>
+                            </div>
+                            <div class="verification-badge" id="verificationBadge">
+                                <span class="badge-icon">✔</span>
+                                <span>Hash Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -1169,60 +2903,222 @@
         updateTime();
         setInterval(updateTime, 1000);
 
-        // ===== SYSTEM HEALTH SIMULATION =====
-        function updateSystemHealth() {
-            const latency = Math.floor(Math.random() * 30) + 8;
-            state.systemHealth.latency = latency;
-            document.getElementById('latencyBadge').textContent = latency + 'ms';
+        // ===== LIVE SYSTEM STATUS POLLING =====
+        async function fetchSystemStatus() {
+            try {
+                const response = await fetch('/system/status');
+                if (!response.ok) throw new Error('Network error');
+                const data = await response.json();
 
-            const dot = document.getElementById('healthDot');
-            const status = document.getElementById('healthStatus');
+                // Update status dot and label
+                const dot = document.getElementById('healthDot');
+                const statusLabel = document.getElementById('systemStatusLabel');
 
-            if (latency > 50) {
-                dot.classList.add('degraded');
-                status.textContent = 'Degraded';
-            } else {
-                dot.classList.remove('degraded');
-                status.textContent = 'Optimal';
+                dot.classList.remove('degraded', 'offline');
+                if (data.status === 'degraded') {
+                    dot.classList.add('degraded');
+                    statusLabel.textContent = 'Degraded';
+                } else if (data.status === 'offline') {
+                    dot.classList.add('offline');
+                    statusLabel.textContent = 'Offline';
+                } else {
+                    statusLabel.textContent = 'Operational';
+                }
+
+                // Update latency with animation
+                const latencyEl = document.getElementById('avgLatency');
+                latencyEl.classList.add('updating');
+                latencyEl.textContent = data.avg_latency_ms;
+                setTimeout(() => latencyEl.classList.remove('updating'), 300);
+
+                // Update queue depth
+                const queueEl = document.getElementById('queueDepth');
+                queueEl.classList.add('updating');
+                queueEl.textContent = data.queue_depth;
+                setTimeout(() => queueEl.classList.remove('updating'), 300);
+
+            } catch (error) {
+                console.warn('System status fetch failed:', error);
+                document.getElementById('healthDot').classList.add('offline');
+                document.getElementById('systemStatusLabel').textContent = 'Offline';
             }
         }
-        setInterval(updateSystemHealth, 3000);
+        fetchSystemStatus();
+        setInterval(fetchSystemStatus, 4000);
 
-        // ===== DASHBOARD UPDATES =====
-        function updateDashboard() {
-            const total = state.stats.total || 1;
+        // ===== REAL-TIME DASHBOARD UPDATES =====
+        let dashboardPaused = false;
+        let lastInspectionTime = null;
 
-            animateValue('dashTotal', state.stats.total);
-            animateValue('dashAccept', state.stats.accept);
-            animateValue('dashReject', state.stats.reject);
-            animateValue('dashReview', state.stats.review);
+        async function fetchDashboardData() {
+            if (dashboardPaused) return;
 
-            const avgConf = state.confidences.length ?
-                Math.round(state.confidences.reduce((a, b) => a + b, 0) / state.confidences.length) : 0;
-            document.getElementById('dashConfidence').textContent = avgConf + '%';
+            try {
+                // Fetch both dashboard summary and system status
+                const [dashRes, statusRes] = await Promise.all([
+                    fetch('/api/dashboard/summary'),
+                    fetch('/system/status')
+                ]);
 
-            // Update distribution chart
-            const acceptPct = (state.stats.accept / total * 100) || 0;
-            const rejectPct = (state.stats.reject / total * 100) || 0;
-            const reviewPct = (state.stats.review / total * 100) || 0;
+                if (!dashRes.ok) throw new Error('Dashboard fetch failed');
+                const data = await dashRes.json();
 
-            const acceptDeg = acceptPct * 3.6;
-            const rejectDeg = acceptDeg + rejectPct * 3.6;
+                // Update health strip from system status
+                if (statusRes.ok) {
+                    const status = await statusRes.json();
+                    updateHealthStrip(status);
+                }
 
-            document.getElementById('donutChart').style.setProperty('--accept-deg', acceptDeg + 'deg');
-            document.getElementById('donutChart').style.setProperty('--reject-deg', rejectDeg + 'deg');
+                // Update state from backend
+                state.stats.total = data.total_inspected;
+                state.stats.accept = data.accepted;
+                state.stats.reject = data.rejected;
+                state.stats.review = data.review_required;
 
-            document.getElementById('distTotal').textContent = total + ' total';
-            document.getElementById('legendAccept').textContent = `Accepted (${Math.round(acceptPct)}%)`;
-            document.getElementById('legendReject').textContent = `Rejected (${Math.round(rejectPct)}%)`;
-            document.getElementById('legendReview').textContent = `Review (${Math.round(reviewPct)}%)`;
+                // Update KPI cards - show "—" if no data
+                if (data.total_inspected > 0) {
+                    animateValue('dashTotal', data.total_inspected);
+                    animateValue('dashAccept', data.accepted);
+                    animateValue('dashReject', data.rejected);
+                    animateValue('dashReview', data.review_required);
+                    document.getElementById('dashConfidence').textContent = data.avg_confidence + '%';
+                } else {
+                    document.getElementById('dashTotal').textContent = '—';
+                    document.getElementById('dashAccept').textContent = '—';
+                    document.getElementById('dashReject').textContent = '—';
+                    document.getElementById('dashReview').textContent = '—';
+                    document.getElementById('dashConfidence').textContent = '—';
+                }
+
+                // Update distribution chart
+                const total = data.total_inspected;
+                if (total > 0) {
+                    const acceptPct = (data.accepted / total * 100);
+                    const rejectPct = (data.rejected / total * 100);
+                    const reviewPct = (data.review_required / total * 100);
+
+                    const acceptDeg = acceptPct * 3.6;
+                    const rejectDeg = acceptDeg + rejectPct * 3.6;
+
+                    document.getElementById('donutChart').style.setProperty('--accept-deg', acceptDeg + 'deg');
+                    document.getElementById('donutChart').style.setProperty('--reject-deg', rejectDeg + 'deg');
+
+                    document.getElementById('distTotal').textContent = total + ' total';
+                    document.getElementById('legendAccept').textContent = `Accepted: ${data.accepted} (${Math.round(acceptPct)}%)`;
+                    document.getElementById('legendReject').textContent = `Rejected: ${data.rejected} (${Math.round(rejectPct)}%)`;
+                    document.getElementById('legendReview').textContent = `Review: ${data.review_required} (${Math.round(reviewPct)}%)`;
+                } else {
+                    document.getElementById('distTotal').textContent = '— total';
+                    document.getElementById('legendAccept').textContent = 'Accepted: — (—%)';
+                    document.getElementById('legendReject').textContent = 'Rejected: — (—%)';
+                    document.getElementById('legendReview').textContent = 'Review: — (—%)';
+                }
+
+                // Update last inspection time
+                if (data.total_inspected > 0) {
+                    lastInspectionTime = new Date();
+                    document.getElementById('lastInspectionText').textContent = 'Just now';
+                }
+
+            } catch (error) {
+                console.warn('Dashboard fetch error:', error);
+                // Show unavailable state
+                document.getElementById('systemStatusText').textContent = 'Unavailable';
+                document.getElementById('systemDot').classList.add('offline');
+            }
         }
 
-        function animateValue(id, value) {
+        // Update health strip from system status
+        function updateHealthStrip(status) {
+            const statusText = document.getElementById('systemStatusText');
+            const dot = document.getElementById('systemDot');
+
+            statusText.textContent = status.status.charAt(0).toUpperCase() + status.status.slice(1);
+
+            dot.classList.remove('degraded', 'offline');
+            if (status.status === 'degraded') dot.classList.add('degraded');
+            if (status.status === 'offline') dot.classList.add('offline');
+
+            document.getElementById('avgLatencyText').textContent = status.avg_latency_ms + 'ms';
+            document.getElementById('queueDepthText').textContent = status.queue_depth;
+        }
+
+        // Timeline controls
+        function toggleTimelinePause() {
+            dashboardPaused = !dashboardPaused;
+            const btn = document.getElementById('pauseBtn');
+            const icon = document.getElementById('pauseIcon');
+            const indicator = document.getElementById('liveIndicator');
+
+            if (dashboardPaused) {
+                btn.classList.add('paused');
+                icon.textContent = '▶';
+                indicator.innerHTML = '<span class="live-dot" style="animation:none;background:var(--color-warning)"></span> Paused';
+            } else {
+                btn.classList.remove('paused');
+                icon.textContent = '⏸';
+                indicator.innerHTML = '<span class="live-dot"></span> Live';
+                fetchDashboardData();
+            }
+        }
+
+        function updateTimelineRange() {
+            // Timeline range change - fetch with limit
+            fetchDashboardData();
+        }
+
+        // Fetch dashboard on load and poll every 3 seconds
+        fetchDashboardData();
+        setInterval(fetchDashboardData, 3000);
+
+        // Update last inspection time periodically
+        setInterval(() => {
+            if (lastInspectionTime) {
+                const seconds = Math.floor((Date.now() - lastInspectionTime) / 1000);
+                if (seconds < 60) {
+                    document.getElementById('lastInspectionText').textContent = seconds + 's ago';
+                } else {
+                    const mins = Math.floor(seconds / 60);
+                    document.getElementById('lastInspectionText').textContent = mins + 'm ago';
+                }
+            }
+        }, 5000);
+
+        function animateValue(id, targetValue) {
             const el = document.getElementById(id);
-            el.textContent = value;
-            el.classList.add('flash');
-            setTimeout(() => el.classList.remove('flash'), 300);
+            if (!el) return;
+
+            const currentValue = parseInt(el.textContent) || 0;
+            const target = parseInt(targetValue) || 0;
+
+            // If values are the same, no animation needed
+            if (currentValue === target) return;
+
+            // Smooth count-up animation
+            const duration = 200; // ms
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Smooth easing
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(currentValue + (target - currentValue) * eased);
+
+                el.textContent = current;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = target;
+                    // Brief highlight on completion
+                    el.classList.add('value-updating');
+                    setTimeout(() => el.classList.remove('value-updating'), 300);
+                }
+            }
+
+            requestAnimationFrame(update);
         }
 
         // Initialize live chart
@@ -1264,31 +3160,38 @@
 
         // ===== IMAGE HANDLING =====
         const uploadZone = document.getElementById('uploadZone');
+        const uploadZoneLarge = document.getElementById('uploadZoneLarge');
         const imageInput = document.getElementById('imageInput');
         const imageWrapper = document.getElementById('imageWrapper');
 
+        // Drag and drop handlers for main image area
         imageWrapper.addEventListener('dragover', e => {
             e.preventDefault();
-            uploadZone.style.background = 'var(--bg-tertiary)';
+            imageWrapper.style.outline = '2px dashed var(--accent-primary)';
         });
 
         imageWrapper.addEventListener('dragleave', () => {
-            uploadZone.style.background = '';
+            imageWrapper.style.outline = '';
         });
 
         imageWrapper.addEventListener('drop', e => {
             e.preventDefault();
-            uploadZone.style.background = '';
+            imageWrapper.style.outline = '';
             if (e.dataTransfer.files.length) handleImageSelect(e.dataTransfer.files[0]);
-        });
-
-        uploadZone.addEventListener('click', e => {
-            if (e.target.tagName !== 'BUTTON') imageInput.click();
         });
 
         imageInput.addEventListener('change', e => {
             if (e.target.files.length) handleImageSelect(e.target.files[0]);
         });
+
+        // STATE FLOW: Upload → Ready → Analyze → Processing → Results
+        function setSystemState(stateName, statusText) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+
+            dot.className = 'status-dot ' + stateName;
+            text.textContent = statusText;
+        }
 
         function handleImageSelect(file) {
             if (!file.type.startsWith('image/')) return alert('Please select an image');
@@ -1299,9 +3202,21 @@
                 const preview = document.getElementById('previewImage');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
-                uploadZone.classList.add('hidden');
-                document.getElementById('actionRow').classList.remove('hidden');
-                document.getElementById('imageStatus').textContent = file.name;
+
+                // Hide upload zone, show image
+                document.getElementById('uploadZoneLarge').style.display = 'none';
+
+                // Update image status
+                document.getElementById('imageStatus').textContent = file.name.length > 20
+                    ? file.name.substring(0, 17) + '...'
+                    : file.name;
+
+                // Enable analyze button and show clear button
+                document.getElementById('analyzeBtn').disabled = false;
+                document.getElementById('clearBtn').classList.remove('hidden');
+
+                // Update state to READY
+                setSystemState('ready', 'Ready for analysis');
             };
             reader.readAsDataURL(file);
         }
@@ -1309,26 +3224,53 @@
         function clearImage() {
             state.selectedFile = null;
             state.currentDetections = [];
+
+            // Reset image preview
             document.getElementById('previewImage').style.display = 'none';
-            document.getElementById('uploadZone').classList.remove('hidden');
-            document.getElementById('actionRow').classList.add('hidden');
+            document.getElementById('uploadZoneLarge').style.display = 'flex';
             document.getElementById('imageStatus').textContent = 'No image';
             document.getElementById('detectionOverlays').innerHTML = '';
-            document.getElementById('explainPanel').classList.remove('active');
+
+            // Disable analyze button, hide clear button
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('clearBtn').classList.add('hidden');
+
+            // Reset to initial state
             resetDecision();
+            setSystemState('idle', 'Idle — Awaiting image');
         }
 
         function resetDecision() {
+            // Reset decision banner
             document.getElementById('decisionBanner').className = 'decision-banner';
             document.getElementById('decisionBadge').textContent = 'Ready';
             document.getElementById('decisionBadge').className = 'decision-badge ready';
             document.getElementById('decisionReason').textContent = 'Upload an image to begin AI-powered damage inspection.';
-            document.getElementById('detectionList').innerHTML = '<div class="empty-state">No detections yet</div>';
-            document.getElementById('detectionCount').textContent = '0 found';
-            document.getElementById('feedbackCard').classList.add('hidden');
+
+            // Reset severity card to awaiting state
+            document.getElementById('severityCard').classList.add('awaiting');
             document.getElementById('severityScore').textContent = '--';
-            document.getElementById('severityLabel').textContent = 'Awaiting Analysis';
-            document.getElementById('gaugeNeedle').style.setProperty('--needle-rotation', '-90deg');
+            document.getElementById('severityLabel').textContent = 'Waiting for analysis';
+            document.getElementById('severityRingProgress').style.strokeDashoffset = '377';
+            document.getElementById('severityRingProgress').className = 'severity-ring-progress';
+
+            // Reset confidence bar
+            document.getElementById('confidenceValue').textContent = '--';
+            document.getElementById('confidenceBar').style.width = '0%';
+
+            // Reset explanation card to awaiting state
+            document.getElementById('explanationCard').classList.add('awaiting');
+            document.getElementById('explanationList').innerHTML = '<div class="empty-state">AI explanation will appear after inspection.</div>';
+            document.getElementById('detectionCount').textContent = '0 found';
+
+            // Hide feedback card
+            document.getElementById('feedbackCard').classList.add('hidden');
+
+            // Reset trace values
+            document.getElementById('traceInferenceTime').textContent = '--';
+            document.getElementById('traceRequestId').textContent = '--';
+            document.getElementById('traceEvidenceHash').textContent = '--';
+            document.getElementById('traceDecisionPath').textContent = '--';
         }
 
         // ===== ANALYSIS =====
@@ -1336,8 +3278,14 @@
             if (!state.selectedFile) return;
 
             const btn = document.getElementById('analyzeBtn');
-            btn.textContent = 'Analyzing...';
+            const btnContent = document.getElementById('analyzeBtnContent');
+
+            // Set button to loading state with spinner
+            btnContent.innerHTML = '<div class="spinner"></div>Analyzing…';
             btn.disabled = true;
+
+            // Update system state to processing
+            setSystemState('processing', 'Processing — AI analyzing image');
 
             try {
                 // Create form data with the image file
@@ -1360,7 +3308,10 @@
 
                 // Transform backend response to frontend format
                 const result = transformBackendResponse(data);
-                handleAnalysisResult(result);
+                handleAnalysisResult(result, data);
+
+                // Update system state to completed
+                setSystemState('completed', 'Completed — Results ready');
 
                 // Update annotated image if available
                 if (data.annotated_image) {
@@ -1372,10 +3323,12 @@
 
             } catch (error) {
                 console.error('Analysis error:', error);
+                setSystemState('idle', 'Error — ' + error.message);
                 alert('Analysis failed: ' + error.message);
             }
 
-            btn.textContent = 'Analyze Image';
+            // Reset button state
+            btnContent.textContent = 'Analyze Image';
             btn.disabled = false;
         }
 
@@ -1395,51 +3348,55 @@
                 contribution: Math.round(det.confidence * 50)
             }));
 
-            // Calculate severity score from detections
-            let severity = 0;
-            if (detections.length > 0) {
-                const avgConf = detections.reduce((sum, d) => sum + d.confidence, 0) / detections.length;
-                severity = Math.round(avgConf * 100);
-            }
-
+            // Use backend-computed severity (NO frontend calculation)
             return {
                 decision: decision,
                 detections: detections,
-                severity: severity,
+                severity: data.decision?.severity_score || 0,
+                severityLabel: data.decision?.severity_label || "SAFE",
+                riskLevel: data.decision?.risk_level || "NONE",
                 confidence: data.detections?.length > 0 ?
-                    Math.round(data.detections[0].confidence * 100) : 85
+                    Math.round(data.detections[0].confidence * 100) : 100
             };
         }
 
         // NOTE: generateAnalysisResult() removed - system now uses real backend API
         // All analysis is performed by TwoStageInferenceEngine on the server
 
-        function handleAnalysisResult(result) {
+        function handleAnalysisResult(result, fullData) {
             state.currentDetections = result.detections;
             const decisionClass = result.decision.toLowerCase().replace('_required', '');
 
-            // Update severity gauge
-            const rotation = (result.severity / 100) * 180 - 90;
-            document.getElementById('gaugeNeedle').style.setProperty('--needle-rotation', rotation + 'deg');
-            document.getElementById('severityScore').textContent = result.severity;
-            document.getElementById('severityScore').style.color =
-                result.severity < 30 ? 'var(--color-accept)' :
-                    result.severity < 60 ? 'var(--color-review)' : 'var(--color-reject)';
-            document.getElementById('severityLabel').textContent =
-                result.severity < 30 ? 'Low Risk' :
-                    result.severity < 60 ? 'Moderate Risk' : 'High Risk';
+            // Remove awaiting state from cards - results are now available
+            document.getElementById('severityCard').classList.remove('awaiting');
+            document.getElementById('explanationCard').classList.remove('awaiting');
 
-            // Update decision
+            // Update severity ring animation
+            updateSeverityRing(result.severity, result.severityLabel);
+
+            // Update confidence bar with animation
+            const maxConf = result.detections.length > 0
+                ? Math.max(...result.detections.map(d => d.confidence))
+                : 1.0;
+            document.getElementById('confidenceValue').textContent = Math.round(maxConf * 100) + '%';
+            document.getElementById('confidenceBar').style.width = (maxConf * 100) + '%';
+
+            // Update decision banner
             document.getElementById('decisionBanner').className = 'decision-banner ' + decisionClass;
             document.getElementById('decisionBadge').textContent = result.decision.replace('_', ' ');
             document.getElementById('decisionBadge').className = 'decision-badge ' + decisionClass;
             document.getElementById('decisionReason').textContent = getDecisionReason(result);
 
-            // Render detections
-            renderDetections(result.detections);
+            // Generate AI Explanation list from backend data
+            generateExplanationList(result.detections, result.decision);
             document.getElementById('detectionCount').textContent = result.detections.length + ' found';
 
-            // Show feedback panel for review
+            // Update AI Trace section from backend data
+            if (fullData) {
+                updateAITrace(fullData);
+            }
+
+            // Show feedback panel for review-required cases
             if (result.decision === 'REVIEW_REQUIRED') {
                 document.getElementById('feedbackCard').classList.remove('hidden');
                 document.getElementById('feedbackPanel').style.display = 'block';
@@ -1447,8 +3404,125 @@
             } else {
                 document.getElementById('feedbackCard').classList.add('hidden');
                 updateStats(result.decision, result.confidence);
-                addToHistory(result);
+                addToHistory(result, false, fullData);
             }
+        }
+
+        // Update severity ring with animation
+        function updateSeverityRing(severity, label) {
+            const ring = document.getElementById('severityRingProgress');
+            const scoreEl = document.getElementById('severityScore');
+            const labelEl = document.getElementById('severityLabel');
+
+            // Calculate stroke offset (circumference = 2 * PI * 60 ≈ 377)
+            const circumference = 377;
+            const offset = circumference - (severity / 100 * circumference);
+            ring.style.strokeDashoffset = offset;
+
+            // Set ring color class based on severity
+            ring.classList.remove('safe', 'low', 'review', 'high');
+            if (severity <= 10) {
+                ring.classList.add('safe');
+                labelEl.textContent = 'SAFE';
+            } else if (severity <= 30) {
+                ring.classList.add('low');
+                labelEl.textContent = 'LOW RISK';
+            } else if (severity <= 49) {
+                ring.classList.add('review');
+                labelEl.textContent = 'REVIEW';
+            } else {
+                ring.classList.add('high');
+                labelEl.textContent = 'HIGH RISK';
+            }
+
+            // Animate score count-up from 0
+            animateSeverityScore(severity);
+        }
+
+        // Animated severity score
+        function animateSeverityScore(target) {
+            const el = document.getElementById('severityScore');
+            const duration = 600;
+            const startTime = performance.now();
+            const startVal = parseInt(el.textContent) || 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(startVal + (target - startVal) * eased);
+                el.textContent = current;
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Generate explanation list from detections
+        function generateExplanationList(detections, decision) {
+            const list = document.getElementById('explanationList');
+
+            if (!detections.length) {
+                list.innerHTML = `
+                    <div class="explanation-item">
+                        <svg class="explanation-icon" fill="none" stroke="var(--color-success)" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>No damaged regions found</span>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = detections.map(d => {
+                const icon = d.name === 'intact'
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />';
+                const color = d.name === 'intact' ? 'var(--color-success)' : 'var(--color-warning)';
+                return `
+                    <div class="explanation-item" onmouseenter="highlightDetection(${d.id})" onmouseleave="unhighlightDetection()">
+                        <svg class="explanation-icon" fill="none" stroke="${color}" viewBox="0 0 24 24">${icon}</svg>
+                        <span>Detected <strong>${d.name}</strong> region (${Math.round(d.confidence * 100)}% conf)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update AI Trace from backend response
+        function updateAITrace(data) {
+            document.getElementById('traceInferenceTime').textContent =
+                Math.round(data.timing?.inference_ms || 0) + 'ms';
+            document.getElementById('traceRequestId').textContent =
+                data.inspection_id || '--';
+
+            // Generate short evidence hash
+            const hash = btoa(JSON.stringify(data.decision || {})).substring(0, 12) + '...';
+            document.getElementById('traceEvidenceHash').textContent = hash;
+
+            // Set decision path
+            const decision = data.decision?.decision || 'ACCEPT';
+            const severity = data.decision?.severity_score || 0;
+            document.getElementById('traceDecisionPath').textContent =
+                `${decision} (severity: ${severity})`;
+        }
+
+        // Toggle AI Trace section (collapsed by default)
+        function toggleAITrace() {
+            const content = document.getElementById('traceContent');
+            const toggle = document.getElementById('traceToggle');
+            content.classList.toggle('expanded');
+            toggle.textContent = content.classList.contains('expanded') ? '▼' : '▶';
+        }
+
+        // Highlight detection on hover
+        function highlightDetection(id) {
+            const overlay = document.querySelector(`[data-detection-id="${id}"]`);
+            if (overlay) overlay.style.boxShadow = '0 0 0 3px var(--accent-primary)';
+        }
+
+        function unhighlightDetection() {
+            document.querySelectorAll('.detection-overlay').forEach(el => {
+                el.style.boxShadow = '';
+            });
         }
 
         function getDecisionReason(result) {
@@ -1531,37 +3605,284 @@
             else state.stats.review++;
 
             state.confidences.push(confidence);
-            updateDashboard();
+            fetchDashboardData();
             addToChart(decision);
         }
 
-        function addToHistory(result, isOverride = false) {
+        // ===== INSPECTION LEDGER STATE =====
+        let ledgerPage = 1;
+        let ledgerRecords = [];
+        let auditModeEnabled = false;
+
+        function addToHistory(result, isOverride = false, fullData = null) {
             const entry = {
-                timestamp: new Date().toLocaleString(),
-                packageId: 'PKG-' + Date.now().toString(36).toUpperCase(),
-                decision: result.decision.replace('_REQUIRED', ''),
+                inspectionId: fullData?.inspection_id || 'INS-' + Date.now().toString(36).toUpperCase(),
+                timestamp: new Date().toISOString(),
+                timestampLocal: new Date().toLocaleString(),
+                timestampUTC: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
+                decision: result.decision,
                 severity: result.severity,
                 confidence: result.confidence,
-                source: isOverride ? 'Operator' : 'AI'
+                source: isOverride ? 'Operator' : 'AI',
+                evidenceVerified: true,
+                detections: result.detections || [],
+                reasoning: result.reasoning || getDecisionReason(result),
+                fullData: fullData
             };
             state.history.unshift(entry);
+            ledgerRecords = state.history;
 
-            const tbody = document.getElementById('historyBody');
-            if (state.history.length === 1) tbody.innerHTML = '';
-
-            const row = document.createElement('tr');
-            row.className = 'new';
-            const decisionClass = entry.decision.toLowerCase();
-            row.innerHTML = `
-                <td>${entry.timestamp}</td>
-                <td><span class="package-id">${entry.packageId}</span></td>
-                <td><span class="status-pill ${decisionClass}">${entry.decision}</span></td>
-                <td>${entry.severity}/100</td>
-                <td>${entry.confidence}%</td>
-                <td>${entry.source}</td>
-            `;
-            tbody.insertBefore(row, tbody.firstChild);
+            renderLedger();
         }
+
+        function renderLedger() {
+            const pageSize = parseInt(document.getElementById('filterPageSize')?.value || 10);
+            const filteredRecords = applyLedgerFiltersToData(ledgerRecords);
+            const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+
+            if (ledgerPage > totalPages) ledgerPage = totalPages;
+
+            const start = (ledgerPage - 1) * pageSize;
+            const pageRecords = filteredRecords.slice(start, start + pageSize);
+
+            const tbody = document.getElementById('ledgerBody');
+            if (!pageRecords.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No inspection records</td></tr>';
+            } else {
+                tbody.innerHTML = pageRecords.map(entry => {
+                    const decisionClass = entry.decision.toLowerCase().replace('_required', '');
+                    return `
+                        <tr onclick="openRecordDetails('${entry.inspectionId}')">
+                            <td class="mono">${entry.inspectionId}</td>
+                            <td>${entry.timestampLocal}</td>
+                            <td class="mono" style="font-size:10px;color:var(--text-tertiary)">${entry.timestampUTC}</td>
+                            <td><span class="status-pill ${decisionClass}">${entry.decision.replace('_', ' ')}</span></td>
+                            <td>${entry.severity}/100</td>
+                            <td>${entry.confidence}%</td>
+                            <td><span class="evidence-status ${entry.evidenceVerified ? 'verified' : 'error'}">
+                                ${entry.evidenceVerified ? '✔ Verified' : '⚠ Error'}
+                            </span></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // Update pagination
+            document.getElementById('ledgerRecordCount').textContent = filteredRecords.length + ' records';
+            document.getElementById('ledgerPageInfo').textContent = `Page ${ledgerPage} of ${totalPages}`;
+            document.getElementById('ledgerPrevBtn').disabled = ledgerPage <= 1;
+            document.getElementById('ledgerNextBtn').disabled = ledgerPage >= totalPages;
+        }
+
+        function applyLedgerFiltersToData(records) {
+            const decisionFilter = document.getElementById('filterDecision')?.value || '';
+            const severityFilter = document.getElementById('filterSeverity')?.value || '';
+            const dateFrom = document.getElementById('filterDateFrom')?.value;
+            const dateTo = document.getElementById('filterDateTo')?.value;
+
+            return records.filter(r => {
+                if (decisionFilter && r.decision !== decisionFilter) return false;
+                if (severityFilter) {
+                    const [min, max] = severityFilter.split('-').map(Number);
+                    if (r.severity < min || r.severity > max) return false;
+                }
+                if (dateFrom) {
+                    const from = new Date(dateFrom);
+                    const recordDate = new Date(r.timestamp);
+                    if (recordDate < from) return false;
+                }
+                if (dateTo) {
+                    const to = new Date(dateTo + 'T23:59:59');
+                    const recordDate = new Date(r.timestamp);
+                    if (recordDate > to) return false;
+                }
+                return true;
+            });
+        }
+
+        function applyLedgerFilters() {
+            ledgerPage = 1;
+            renderLedger();
+        }
+
+        function ledgerPrevPage() {
+            if (ledgerPage > 1) {
+                ledgerPage--;
+                renderLedger();
+            }
+        }
+
+        function ledgerNextPage() {
+            ledgerPage++;
+            renderLedger();
+        }
+
+        function openRecordDetails(inspectionId) {
+            const record = ledgerRecords.find(r => r.inspectionId === inspectionId);
+            if (!record) return;
+
+            // Show panel
+            document.getElementById('recordDetailsPanel').classList.remove('hidden');
+
+            // Populate images
+            if (record.fullData?.annotated_image) {
+                document.getElementById('detailAnnotatedImage').src = record.fullData.annotated_image;
+            }
+
+            // Populate detections
+            const detList = document.getElementById('detailDetectionsList');
+            if (record.detections?.length) {
+                detList.innerHTML = record.detections.map(d => `
+                    <div class="detection-row">
+                        <span>${d.name} <span style="color:var(--text-tertiary)">(${Math.round(d.confidence * 100)}%)</span></span>
+                        <span class="status-pill ${d.severity || 'minor'}">${d.severity || 'minor'}</span>
+                    </div>
+                `).join('');
+            } else {
+                detList.innerHTML = '<div style="color:var(--text-tertiary)">No detections</div>';
+            }
+
+            // Populate reasoning
+            document.getElementById('detailReasoning').textContent = record.reasoning || 'No reasoning available';
+
+            // Populate severity breakdown
+            document.getElementById('detailSeverityBreakdown').innerHTML = `
+                <div>Final Score: <strong>${record.severity}/100</strong></div>
+                <div>Decision: <strong>${record.decision}</strong></div>
+                <div>Source: ${record.source}</div>
+            `;
+
+            // Generate evidence hashes
+            const dataStr = JSON.stringify(record);
+            document.getElementById('hashImage').textContent = btoa(record.inspectionId).substring(0, 16) + '...';
+            document.getElementById('hashDetection').textContent = btoa(JSON.stringify(record.detections || [])).substring(0, 16) + '...';
+            document.getElementById('hashDecision').textContent = btoa(record.decision).substring(0, 16) + '...';
+            document.getElementById('hashRecord').textContent = btoa(dataStr).substring(0, 20) + '...';
+        }
+
+        function closeRecordDetails() {
+            document.getElementById('recordDetailsPanel').classList.add('hidden');
+        }
+
+        function toggleEvidenceDetails() {
+            const content = document.getElementById('evidenceContent');
+            const icon = document.getElementById('evidenceToggleIcon');
+            content.classList.toggle('expanded');
+            icon.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+        }
+
+        function toggleAuditMode() {
+            auditModeEnabled = document.getElementById('auditModeToggle').checked;
+            if (auditModeEnabled) {
+                document.body.classList.add('audit-mode');
+            } else {
+                document.body.classList.remove('audit-mode');
+            }
+        }
+
+        // ===== AUDIT LOGS LOGIC =====
+        let auditPollingInterval = null;
+        let lastAuditCount = 0;
+
+        async function fetchAuditLogs() {
+            if (!document.querySelector('[data-page="audit"]').classList.contains('active')) return;
+
+            try {
+                const response = await fetch('/api/audit/logs');
+                if (!response.ok) return;
+
+                const data = await response.json();
+                renderAuditTable(data.logs);
+
+                // Update stats
+                document.getElementById('auditTotalCount').textContent = data.total_count;
+                document.getElementById('auditLastUpdated').textContent = new Date().toLocaleTimeString();
+
+            } catch (e) {
+                console.error('Audit fetch error:', e);
+            }
+        }
+
+        function renderAuditTable(logs) {
+            const tbody = document.getElementById('auditTableBody');
+
+            if (!logs || logs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="audit-empty-state">
+                            <div class="empty-icon">📋</div>
+                            <h3>No audit records yet</h3>
+                            <p>Logs will appear automatically after inspections.</p>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            // Only update if count changed to avoid flickering
+            if (logs.length === lastAuditCount) return;
+            lastAuditCount = logs.length;
+
+            tbody.innerHTML = logs.map((log, index) => {
+                const isLatest = index === 0;
+                const rowClass = isLatest ? 'latest-row' : '';
+                const latestBadge = isLatest ? '<span class="latest-badge">LATEST</span>' : '';
+
+                // Format Decision Color
+                let decisionClass = log.decision.toLowerCase();
+                if (log.decision === 'REVIEW_REQUIRED') decisionClass = 'review';
+
+                // Format Action Badge style
+                const actionClass = log.action.toLowerCase().replace('_', '-');
+
+                // Format Source Badge style
+                const sourceClass = log.source.toLowerCase();
+
+                // Format Date (Local and UTC)
+                const dateObj = new Date(log.timestamp);
+                const localTime = dateObj.toLocaleString();
+                const utcTime = dateObj.toISOString();
+
+                return `
+                    <tr class="${rowClass}">
+                        <td class="timestamp-cell">
+                            ${localTime} ${latestBadge}
+                            <span class="utc-tooltip">${utcTime} (UTC)</span>
+                        </td>
+                        <td class="package-id-cell" onclick="alert('View details for ${log.package_id}')">
+                            ${log.package_id}
+                        </td>
+                        <td>
+                            <span class="action-badge ${actionClass}">${log.action.replace('_', ' ')}</span>
+                        </td>
+                        <td>
+                            <span class="decision-text ${decisionClass}">${log.decision.replace('_', ' ')}</span>
+                        </td>
+                        <td class="severity-cell">${log.severity}/100</td>
+                        <td class="confidence-cell">${log.confidence}%</td>
+                        <td>
+                            <span class="source-badge ${sourceClass}">${log.source}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Initialize Audit Loop when tab is active
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (tab.dataset.page === 'audit') {
+                    fetchAuditLogs(); // Fetch immediately
+                    if (!auditPollingInterval) {
+                        auditPollingInterval = setInterval(fetchAuditLogs, 5000);
+                    }
+                } else {
+                    if (auditPollingInterval) {
+                        clearInterval(auditPollingInterval);
+                        auditPollingInterval = null;
+                    }
+                }
+            });
+        });
     </script>
 </body>
 

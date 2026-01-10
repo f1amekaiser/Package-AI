@@ -1,0 +1,65 @@
+{
+  "inspection_id": "INS-20260109-123821-0838",
+  "package_id": "PKG-4545",
+  "station_id": "STATION-01",
+  "timestamp_utc": "2026-01-09T12:38:21.083817Z",
+  "timestamp_local": "2026-01-09T18:08:21.089404",
+  "images": {
+    "original": "original.jpg",
+    "annotated": "annotated.jpg"
+  },
+  "detections": [
+    {
+      "bbox": {
+        "x1": 0.23916234775465361,
+        "y1": 0.0032726740491562994,
+        "x2": 1.0,
+        "y2": 0.6318796351336051
+      },
+      "yolo_confidence": 0.10646042227745056,
+      "classifier_label": "damaged",
+      "classifier_confidence": 0.992938220500946
+    },
+    {
+      "bbox": {
+        "x1": 0.21124571196886957,
+        "y1": 0.017506779104039288,
+        "x2": 0.652855853645169,
+        "y2": 0.8700450067934783
+      },
+      "yolo_confidence": 0.09259083867073059,
+      "classifier_label": "intact",
+      "classifier_confidence": 0.6278741359710693
+    },
+    {
+      "bbox": {
+        "x1": 0.24805812446438535,
+        "y1": 0.010694812691730001,
+        "x2": 0.9273898844816246,
+        "y2": 0.47236350239187047
+      },
+      "yolo_confidence": 0.06554042547941208,
+      "classifier_label": "damaged",
+      "classifier_confidence": 0.948270320892334
+    }
+  ],
+  "detection_count": 3,
+  "decision": {
+    "result": "REJECT",
+    "reason": "2 confirmed damage(s) detected"
+  },
+  "integrity": {
+    "image_hash_sha256": "42c332a14d779734e78e7ab924d77ab4e242603b5d71c363135e664c5afc74a2",
+    "detection_hash_sha256": "7f45e0b8159e0a505ddac1df1a1b9f0c43e0193e43ea2359427f91aeeb883403",
+    "decision_hash_sha256": "30a2a4092f6c867246e8fb75678ab80d713ec873d71016c0aaa9a86483b4125a",
+    "record_hash_sha256": "554b392f9a2af57b91f400de8e75881a01a4d51469875c2757730f5d9cfe9237",
+    "algorithm": "SHA-256"
+  },
+  "model_versions": {
+    "detector": "best.pt",
+    "classifier": "damaged_classifier_best.pt",
+    "pipeline_version": "2.0.0"
+  },
+  "immutable": true,
+  "record_version": "1.0"
+}
