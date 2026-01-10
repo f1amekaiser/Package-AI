@@ -23,6 +23,10 @@ pydantic>=2.0.0
 # Web UI server
 flask>=3.0.0
 
+# Database (PostgreSQL)
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
 # UI (optional)
 # PyQt6>=6.5.0
 

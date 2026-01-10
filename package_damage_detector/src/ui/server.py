@@ -24,6 +24,14 @@ from ..core.inference_engine import TwoStageInferenceEngine, TwoStageDetection
 from ..core.evidence_manager import TwoStageEvidenceRecorder
 from ..core.decision_engine import compute_severity
 
+# Import database components for PostgreSQL persistence
+try:
+    from ..db.models import InspectionHistory, AuditLog, Detection, EvidenceMetadata, Base
+    from ..db.connection import get_db_session, init_db, engine
+    DB_AVAILABLE = True
+except ImportError:
+    DB_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,8 +95,20 @@ def create_ui_app(
     
     app.config['two_stage_engine'] = two_stage_engine
     app.config['evidence_recorder'] = evidence_recorder
-    app.config['inspection_history'] = {}  # Store for operator overrides
-    app.config['audit_logs'] = []  # Store for audit trail (enterprise compliance)
+    app.config['inspection_history'] = {}  # Store for operator overrides (memory fallback)
+    app.config['audit_logs'] = []  # Store for audit trail (memory fallback)
+    
+    # Initialize PostgreSQL database if available
+    app.config['db_available'] = False
+    if DB_AVAILABLE:
+        try:
+            init_db()
+            app.config['db_available'] = True
+            logger.info("PostgreSQL database initialized successfully")
+        except Exception as e:
+            logger.warning(f"PostgreSQL unavailable, using in-memory storage: {e}")
+    else:
+        logger.warning("Database module not available, using in-memory storage")
     
     # -------------------------------------------------------------------------
     # UI ROUTES
@@ -199,11 +219,30 @@ def create_ui_app(
     @app.route('/api/audit/logs')
     def get_audit_logs():
         """Return audit logs for enterprise compliance tracking."""
+        # Try PostgreSQL first
+        if app.config.get('db_available'):
+            db = None
+            try:
+                db = get_db_session()
+                logs = db.query(AuditLog).order_by(AuditLog.created_at.desc()).limit(100).all()
+                log_list = [log.to_dict() for log in logs]
+                return jsonify({
+                    "logs": log_list,
+                    "total_count": len(log_list),
+                    "source": "postgresql"
+                })
+            except Exception as e:
+                logger.error(f"Database read failed: {e}")
+            finally:
+                if db:
+                    db.close()
+        
+        # Fallback to in-memory storage
         audit_logs = app.config.get('audit_logs', [])
-        # Return logs in reverse chronological order (newest first)
         return jsonify({
             "logs": list(reversed(audit_logs)),
-            "total_count": len(audit_logs)
+            "total_count": len(audit_logs),
+            "source": "memory"
         })
     
     @app.route('/analyze-image', methods=['POST'])
@@ -374,18 +413,92 @@ def create_ui_app(
             else:
                 stats_data["confidences"].append(1.0)  # 100% confidence for no-detection case
             
-            # Store for potential override
+            # Store for potential override (memory cache)
             app.config['inspection_history'][inspection_id] = {
                 "decision": decision,
                 "package_id": package_id,
                 "timestamp": datetime.utcnow().isoformat()
             }
             
-            # Add audit log entry for compliance tracking
+            # Calculate max confidence for records
             max_confidence = 100.0
             if detection_list:
                 max_confidence = max(d.get('confidence', 1.0) for d in detection_list) * 100
             
+            # Persist to PostgreSQL database
+            if app.config.get('db_available'):
+                db = None
+                try:
+                    db = get_db_session()
+                    
+                    # Get severity score safely
+                    sev_score = locals().get('severity_score', 0) or 0
+                    
+                    # Create InspectionHistory record
+                    history_record = InspectionHistory(
+                        inspection_id=inspection_id,
+                        package_id=package_id,
+                        decision=decision,
+                        severity_score=sev_score,
+                        confidence=round(max_confidence, 1),
+                        source='AI',
+                        rationale=reason,
+                        detections_count=len(detection_list),
+                        inference_time_ms=inference_time
+                    )
+                    db.add(history_record)
+                    
+                    # Create Detection records for each detection
+                    for det in detection_list:
+                        bbox = det.get('bbox', [0, 0, 0, 0])
+                        detection_record = Detection(
+                            inspection_id=inspection_id,
+                            class_name=det.get('class_name', 'unknown'),
+                            confidence=det.get('confidence', 0.0),
+                            severity_level=det.get('severity_level', 'MINOR'),
+                            bbox_x1=bbox[0] if len(bbox) > 0 else 0,
+                            bbox_y1=bbox[1] if len(bbox) > 1 else 0,
+                            bbox_x2=bbox[2] if len(bbox) > 2 else 0,
+                            bbox_y2=bbox[3] if len(bbox) > 3 else 0
+                        )
+                        db.add(detection_record)
+                    
+                    # Create INSPECTED audit log
+                    audit_inspected = AuditLog(
+                        inspection_id=inspection_id,
+                        package_id=package_id,
+                        action='INSPECTED',
+                        decision=decision,
+                        severity=sev_score,
+                        confidence=round(max_confidence, 1),
+                        source='AI'
+                    )
+                    db.add(audit_inspected)
+                    
+                    # Create DECISION_MADE audit log
+                    audit_decision = AuditLog(
+                        inspection_id=inspection_id,
+                        package_id=package_id,
+                        action='DECISION_MADE',
+                        decision=decision,
+                        severity=sev_score,
+                        confidence=round(max_confidence, 1),
+                        source='AI'
+                    )
+                    db.add(audit_decision)
+                    
+                    # Commit atomic transaction
+                    db.commit()
+                    
+                except Exception as e:
+                    logger.error(f"Database write failed: {e}")
+                    if db:
+                        db.rollback()
+                finally:
+                    if db:
+                        db.close()
+            
+            # Also keep in-memory copy for backward compatibility
             audit_entry = {
                 "timestamp": datetime.utcnow().isoformat() + "Z",
                 "package_id": package_id,
@@ -398,7 +511,6 @@ def create_ui_app(
             }
             app.config['audit_logs'].append(audit_entry)
             
-            # Add DECISION_MADE entry
             decision_entry = {
                 "timestamp": datetime.utcnow().isoformat() + "Z",
                 "package_id": package_id,
@@ -614,7 +726,29 @@ def create_ui_app(
             else:
                 stats_data["review_count"] += 1
         
-        # Add audit log entry for operator override
+        # Persist operator override to PostgreSQL
+        if app.config.get('db_available'):
+            try:
+                db = get_db_session()
+                override_log = AuditLog(
+                    inspection_id=inspection_id,
+                    package_id=original.get("package_id", "UNKNOWN"),
+                    action='REVIEW_OVERRIDE',
+                    decision=new_decision,
+                    severity=0,
+                    confidence=100.0,
+                    source='Manual'
+                )
+                db.add(override_log)
+                db.commit()
+                db.close()
+            except Exception as e:
+                logger.error(f"Database write failed for override: {e}")
+                if db:
+                    db.rollback()
+                    db.close()
+        
+        # Also keep in-memory copy
         override_audit = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "package_id": original.get("package_id", "UNKNOWN"),
@@ -634,6 +768,39 @@ def create_ui_app(
             "operator_decision": new_decision,
             "operator_id": data.get("operator_id", "OPERATOR"),
             "message": f"Decision overridden from {original_decision} to {new_decision}"
+        })
+    
+    # New endpoint for inspection history from database
+    @app.route('/api/history')
+    def get_inspection_history():
+        """Return inspection history for the History tab."""
+        # Try PostgreSQL first
+        if app.config.get('db_available'):
+            db = None
+            try:
+                db = get_db_session()
+                records = db.query(InspectionHistory).order_by(
+                    InspectionHistory.created_at.desc()
+                ).limit(100).all()
+                history_list = [record.to_dict() for record in records]
+                return jsonify({
+                    "history": history_list,
+                    "total_count": len(history_list),
+                    "source": "postgresql"
+                })
+            except Exception as e:
+                logger.error(f"Database read failed: {e}")
+            finally:
+                if db:
+                    db.close()
+        
+        # Fallback to in-memory
+        history = app.config.get('inspection_history', {})
+        history_list = list(history.values())
+        return jsonify({
+            "history": history_list,
+            "total_count": len(history_list),
+            "source": "memory"
         })
     
     return app

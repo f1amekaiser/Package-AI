@@ -9,61 +9,104 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
         :root {
-            /* ===== PREMIUM ENTERPRISE COLOR SYSTEM ===== */
+            /* ===== LUXURY MONOCHROME + SAPPHIRE SPECTRUM ===== */
 
-            /* Primary Palette - Neutral First */
-            --bg-primary: #F9FAFB;
+            /* Canvas Foundation - Alabaster & Porcelain */
+            --bg-primary: #F8FAFC;
+            /* Soft Alabaster */
             --bg-secondary: #FFFFFF;
+            /* Porcelain White */
             --bg-tertiary: #F1F5F9;
-            --border-color: #E5E7EB;
+            /* Cool Gray 100 */
+            --bg-elevated: #FFFFFF;
 
-            /* Text Hierarchy */
+            /* Borders - Subtle & Clean */
+            --border-color: #E2E8F0;
+            /* Slate 200 */
+            --border-subtle: rgba(15, 23, 42, 0.04);
+            --border-highlight: rgba(59, 130, 246, 0.1);
+
+            /* Ink System - Graphite & Slate */
             --text-primary: #0F172A;
+            /* Graphite (Slate 900) */
             --text-secondary: #64748B;
+            /* Slate 500 */
             --text-tertiary: #94A3B8;
-            --text-number: #020617;
+            /* Slate 400 */
+            --text-number: #1E293B;
+            /* Slate 800 */
+            --text-muted: #CBD5E1;
+            /* Slate 300 */
 
-            /* Brand Accent - Deep Navy to Royal Blue */
-            --accent-primary: #2563EB;
-            --accent-dark: #1E3A8A;
-            --accent-gradient: linear-gradient(135deg, #1E3A8A, #2563EB);
+            /* Brand Core - Executive Graphite */
+            --accent-primary: #0F172A;
+            --accent-dark: #020617;
+            --accent-light: #334155;
+            --accent-gradient: linear-gradient(135deg, #0F172A 0%, #334155 100%);
+            --accent-glow: rgba(15, 23, 42, 0.12);
 
-            /* Secondary Accent - Slate */
-            --accent-secondary: #475569;
-            --accent-secondary-dark: #334155;
+            /* The Sapphire Spectrum (Replacing Red/Green) */
+            /* Accept -> Sapphire Flow */
+            --sapphire-start: #1E3A8A;
+            --sapphire-mid: #3B82F6;
+            --sapphire-end: #60A5FA;
+            --color-accept: #3B82F6;
+            /* Fallback/Main */
 
-            /* Semantic States - Premium Muted */
-            --color-accept: #1E3A8A;
-            --color-reject: #7F1D1D;
-            --color-review: #92400E;
-            --color-success: #14532D;
-            --color-warning: #92400E;
-            --color-critical: #7F1D1D;
+            /* Reject -> Amethyst Smoke */
+            --amethyst-start: #2E1A2A;
+            --amethyst-mid: #6B2D5C;
+            --amethyst-end: #9F5F80;
+            --color-reject: #6B2D5C;
+            /* Fallback/Main */
 
-            /* Tints - Subtle Backgrounds */
+            /* Review -> Titanium Mist */
+            --titanium-start: #4B5563;
+            --titanium-mid: #9CA3AF;
+            --titanium-end: #E5E7EB;
+            --color-review: #9CA3AF;
+            /* Fallback/Main */
+
+            /* Gradient Strokes (Soft & Luxurious) */
+            --grad-accept: linear-gradient(135deg, var(--sapphire-start), var(--sapphire-end));
+            --grad-reject: linear-gradient(135deg, var(--amethyst-start), var(--amethyst-end));
+            --grad-review: linear-gradient(135deg, var(--titanium-start), var(--titanium-end));
+            --grad-confidence: linear-gradient(135deg, #1E293B 0%, #64748B 100%);
+
+            /* Tints - Porcelain Glazes */
             --tint-accept: #EFF6FF;
-            --tint-reject: #FEF2F2;
-            --tint-review: #FFFBEB;
+            /* Blue 50 */
+            --tint-reject: #FAF5FF;
+            /* Purple 50 */
+            --tint-review: #F8FAFC;
+            /* Slate 50 */
+            --tint-primary: #F8FAFC;
 
-            /* Shadow System - Enterprise Depth */
-            --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
-            --shadow-card-hover: 0 12px 32px rgba(15, 23, 42, 0.08);
-            --shadow-nav: 0 4px 16px rgba(15, 23, 42, 0.04);
+            /* Glass Effect System - "Museum Glass" */
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(226, 232, 240, 0.6);
+            --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            --glass-blur: 24px;
 
-            /* Chart Colors */
-            --chart-bar: linear-gradient(180deg, #CBD5E1, #94A3B8);
-            --chart-active: linear-gradient(180deg, #1E40AF, #3B82F6);
+            /* Shadow System - Sophisticated Depth */
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+            --shadow-card-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            --shadow-nav: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+            --shadow-elevated: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
 
-            /* Live Indicator */
-            --live-dot: #2563EB;
+            /* Chart Tokens */
+            --chart-bar: linear-gradient(180deg, #E2E8F0, #CBD5E1);
+            --chart-active: linear-gradient(180deg, #1E3A8A, #3B82F6);
 
-            /* ===== MOTION SYSTEM ===== */
-            --motion-standard: 200ms;
-            --motion-fast: 120ms;
-            --motion-slow: 300ms;
-            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
-            --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
-            --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+            /* Live Indicator - Subtle Pulse */
+            --live-dot: #3B82F6;
+            --live-glow: rgba(59, 130, 246, 0.2);
+
+            /* Motion */
+            --motion-fast: 150ms;
+            --motion-standard: 250ms;
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-luxury: cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * {
@@ -167,17 +210,17 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== HEADER (Premium Water-Drop Glass) ===== */
+        /* ===== HEADER (Premium Liquid Glass Navigation) ===== */
         .header {
             background: transparent;
             position: sticky;
-            top: 12px;
+            top: 16px;
             z-index: 100;
-            padding: 0 24px;
+            padding: 0 32px;
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1320px;
             margin: 0 auto;
             padding: 0;
             display: flex;
@@ -191,21 +234,27 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            /* Translucent Glass Background */
-            background: rgba(255, 255, 255, 0.55);
-            /* Backdrop Blur (Core Glass Effect) */
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            /* Water Drop Shape */
-            height: 72px;
-            border-radius: 22px;
-            padding: 0 24px;
-            /* Light Refraction Edge */
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            /* Floating Depth Shadow */
+            /* Premium Glass Effect */
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+            /* Elevated Pill Shape */
+            height: 64px;
+            border-radius: 20px;
+            padding: 0 8px 0 20px;
+            /* Subtle Glass Border */
+            border: 1px solid var(--glass-border);
+            /* Refined Shadow */
             box-shadow:
-                0 10px 35px rgba(0, 0, 0, 0.12),
-                inset 0 1px 1px rgba(255, 255, 255, 0.35);
+                var(--shadow-nav),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transition: box-shadow var(--motion-standard) var(--ease-smooth);
+        }
+
+        .header-inner:hover {
+            box-shadow:
+                var(--shadow-elevated),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
 
         .logo {
@@ -236,59 +285,80 @@
 
         .nav-tabs {
             display: flex;
-            gap: 4px;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 4px;
+            border-radius: 14px;
         }
 
         .nav-tab {
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 10px 18px;
+            border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
             cursor: pointer;
             border: none;
             background: transparent;
-            transition: all 0.25s ease;
+            transition: all var(--motion-fast) var(--ease-smooth);
             position: relative;
+            letter-spacing: -0.01em;
         }
 
         .nav-tab:hover {
             color: var(--text-primary);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .nav-tab.active {
             color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            font-weight: 600;
+            background: var(--bg-secondary);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .nav-tab.active::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: 6px;
             left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 2px;
-            background: var(--accent-gradient);
-            border-radius: 1px;
+            transform: translateX(-50%) scaleX(1);
+            width: 16px;
+            height: 3px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            transition: transform var(--motion-fast) var(--ease-spring);
+        }
+
+        .nav-tab:not(.active)::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 16px;
+            height: 3px;
+            background: var(--accent-primary);
+            border-radius: 2px;
+            transition: transform var(--motion-fast) var(--ease-smooth);
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
         }
 
-        /* System Health Indicator */
+        /* System Health Indicator - Premium Pill */
         .system-health {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 6px 12px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
         }
 
         .health-indicator {
@@ -296,6 +366,7 @@
             align-items: center;
             gap: 6px;
             font-size: 12px;
+            font-weight: 500;
         }
 
         .health-dot {
@@ -303,39 +374,61 @@
             height: 8px;
             border-radius: 50%;
             background: var(--live-dot);
-            animation: softPulse 2s var(--ease-smooth) infinite;
+            box-shadow: 0 0 0 3px var(--live-glow);
+            animation: healthPulse 2s var(--ease-smooth) infinite;
+        }
+
+        @keyframes healthPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px var(--live-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+            }
         }
 
         .health-dot.degraded {
             background: var(--color-warning);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
         }
 
         .health-dot.offline {
             background: var(--color-critical);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
             animation: none;
         }
 
-        /* Live Indicators */
+        /* Live Indicators - Pill Style */
         .live-indicators {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 8px;
         }
 
         .indicator-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             font-size: 12px;
             color: var(--text-secondary);
-            padding: 4px 10px;
+            padding: 6px 12px;
             background: var(--bg-secondary);
-            border-radius: 16px;
-            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: all var(--motion-fast) var(--ease-smooth);
+        }
+
+        .indicator-item:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 120, 212, 0.03);
         }
 
         .indicator-value {
             font-weight: 600;
+            font-size: 12px;
             color: var(--text-primary);
             font-variant-numeric: tabular-nums;
             transition: color var(--motion-fast) var(--ease-smooth);
@@ -344,6 +437,12 @@
         .indicator-value.updating {
             color: var(--accent-primary);
             animation: valuePulse 300ms var(--ease-smooth);
+        }
+
+        .indicator-unit {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-weight: 400;
         }
 
         @keyframes pulse {
@@ -502,23 +601,75 @@
             color: var(--color-warning);
         }
 
-        /* Audit Confidence Signal */
-        .audit-signal {
+        /* Dashboard Performance Footer */
+        .dashboard-footer {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px;
-            margin-top: 20px;
-            background: var(--tint-accept);
-            border: 1px solid rgba(30, 58, 138, 0.1);
-            border-radius: 8px;
+            gap: 16px;
+            padding: 14px 20px;
+            margin-top: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
             font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .footer-icon {
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--border-color);
+        }
+
+        .footer-latency-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--live-dot);
+            box-shadow: 0 0 0 2px var(--live-glow);
+        }
+
+        .footer-latency-dot.slow {
+            background: var(--color-warning);
+            box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+        }
+
+        .footer-status {
+            margin-left: auto;
+            padding: 4px 12px;
+            background: var(--tint-accept);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
             color: var(--color-success);
         }
 
-        .audit-icon {
-            flex-shrink: 0;
+        .footer-status.processing {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4F46E5;
+        }
+
+        .footer-status.warning {
+            background: var(--tint-review);
+            color: var(--color-warning);
         }
 
         .stats-row {
@@ -528,77 +679,119 @@
             margin-bottom: 24px;
         }
 
+        /* Premium Executive KPI Cards */
         .stat-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px;
-            border-left: 3px solid var(--border-color);
-            box-shadow: var(--shadow-card);
-            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 14px;
+            padding: 20px 18px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.02);
+            transition: all var(--motion-standard) var(--ease-smooth);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+            background: var(--accent-gradient);
+            transition: width var(--motion-fast) var(--ease-smooth);
         }
 
         .stat-card:hover {
-            box-shadow: var(--shadow-card-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.04);
             transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
-        .stat-card.total {
-            border-left-color: var(--accent-dark);
+        .stat-card:hover::before {
+            width: 5px;
         }
 
-        .stat-card.accept {
-            border-left-color: var(--color-accept);
+        /* Card Accent Colors - Muted Premium Palette */
+        .stat-card.total::before {
+            background: linear-gradient(180deg, #374151 0%, #6B7280 100%);
         }
 
-        .stat-card.reject {
-            border-left-color: var(--color-reject);
+        .stat-card.accept::before {
+            background: linear-gradient(180deg, #047857 0%, #34D399 100%);
         }
 
-        .stat-card.review {
-            border-left-color: var(--color-review);
+        .stat-card.reject::before {
+            background: linear-gradient(180deg, #B91C1C 0%, #F87171 100%);
         }
 
-        .stat-card.confidence {
-            border-left-color: var(--accent-primary);
+        .stat-card.review::before {
+            background: linear-gradient(180deg, #D97706 0%, #FBBF24 100%);
+        }
+
+        .stat-card.confidence::before {
+            background: linear-gradient(180deg, #4338CA 0%, #818CF8 100%);
         }
 
         .stat-label {
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+            margin-bottom: 10px;
         }
 
         .stat-value {
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
             color: var(--text-number);
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            transition: color var(--motion-fast) var(--ease-smooth);
+        }
+
+        .stat-value.loading {
+            opacity: 0.5;
+        }
+
+        .stat-card.total .stat-value {
+            color: var(--text-primary);
         }
 
         .stat-card.accept .stat-value {
-            color: var(--color-accept);
+            color: #047857;
         }
 
         .stat-card.reject .stat-value {
-            color: var(--color-reject);
+            color: #B91C1C;
         }
 
         .stat-card.review .stat-value {
-            color: var(--color-review);
+            color: #D97706;
         }
 
         .stat-card.confidence .stat-value {
-            color: var(--text-number);
+            color: #4338CA;
         }
 
         .stat-trend {
             font-size: 11px;
             color: var(--text-tertiary);
-            margin-top: 6px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-trend-icon {
+            width: 12px;
+            height: 12px;
+            opacity: 0.6;
         }
 
         .charts-row {
@@ -675,67 +868,144 @@
             animation: pulse 2s infinite;
         }
 
-        /* Distribution Chart */
+        /* Distribution Chart - Premium Donut */
         .donut-chart {
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            margin: 16px auto;
-            background: conic-gradient(var(--color-accept) 0deg var(--accept-deg, 180deg),
-                    var(--color-reject) var(--accept-deg, 180deg) var(--reject-deg, 252deg),
-                    var(--color-review) var(--reject-deg, 252deg) 360deg);
+            margin: 20px auto;
             position: relative;
+            transition: transform var(--motion-standard) var(--ease-luxury);
+
+            /* Luminous Outer Glow */
+            box-shadow:
+                0 0 30px -5px rgba(59, 130, 246, 0.15),
+                0 10px 20px -5px rgba(0, 0, 0, 0.1);
+
+            /* Multi-stop Conic Gradient with Soft Falloff */
+            background: conic-gradient(
+                    /* Accept: Sapphire Flow (0 -> AcceptDeg) */
+                    var(--sapphire-start) 0deg,
+                    var(--sapphire-mid) calc(var(--accept-deg, 0deg) * 0.5),
+                    var(--sapphire-end) var(--accept-deg, 0deg),
+
+                    /* Reject: Amethyst Smoke (AcceptDeg -> RejectDeg) */
+                    var(--amethyst-start) var(--accept-deg, 0deg),
+                    var(--amethyst-mid) calc(var(--accept-deg, 0deg) + (var(--reject-deg, 0deg) - var(--accept-deg, 0deg)) * 0.5),
+                    var(--amethyst-end) var(--reject-deg, 0deg),
+
+                    /* Review: Titanium Mist (RejectDeg -> 360) */
+                    var(--titanium-start) var(--reject-deg, 0deg),
+                    var(--titanium-mid) calc(var(--reject-deg, 0deg) + (360deg - var(--reject-deg, 0deg)) * 0.5),
+                    var(--titanium-end) 360deg);
         }
 
+        .donut-chart:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 40px -5px rgba(59, 130, 246, 0.25),
+                0 20px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Inner Hollow - Luminous Ring */
         .donut-chart::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: var(--bg-secondary);
             border-radius: 50%;
+            /* Inner Rim Light */
+            box-shadow:
+                inset 0 2px 10px rgba(0, 0, 0, 0.05),
+                0 0 20px rgba(255, 255, 255, 0.8);
         }
 
+        .donut-empty {
+            background: var(--bg-tertiary) !important;
+            box-shadow: none !important;
+        }
+
+        .donut-empty::before {
+            content: 'No data';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            z-index: 10;
+        }
+
+        /* Legend Redesign */
         .legend {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 0 10px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
+            gap: 12px;
+            font-size: 11px;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
+            transition: all var(--motion-fast) var(--ease-smooth);
+            cursor: default;
+        }
+
+        .legend-item:hover {
+            color: var(--text-primary);
         }
 
         .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 2px;
+            width: 24px;
+            height: 4px;
+            border-radius: 1px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .legend-dot.accept {
-            background: var(--color-accept);
+            background: linear-gradient(90deg, var(--sapphire-start), var(--sapphire-end));
         }
 
         .legend-dot.reject {
-            background: var(--color-reject);
+            background: linear-gradient(90deg, var(--amethyst-start), var(--amethyst-end));
         }
 
         .legend-dot.review {
-            background: var(--color-review);
+            background: linear-gradient(90deg, var(--titanium-start), var(--titanium-end));
         }
 
-        /* ===== AI PROCESSING (Enterprise 3-Column Layout) ===== */
+        .legend-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-left: auto;
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .legend-percent {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            min-width: 32px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ===== AI PROCESSING (Professional Vision Console) ===== */
         .processing-grid {
             display: grid;
-            grid-template-columns: 260px 1fr 300px;
-            gap: 24px;
-            min-height: 600px;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 20px;
+            min-height: 620px;
             align-items: start;
         }
 
@@ -750,12 +1020,15 @@
             padding: 0;
         }
 
-        /* Combined Input & Status Card */
+        /* Combined Input & Status Card - Glass Effect */
         .input-status-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
             overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
 
         .input-status-card .card-header {
@@ -852,10 +1125,13 @@
         }
 
         .vision-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .vision-card .card-header {
@@ -864,6 +1140,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(255, 255, 255, 0.4);
         }
 
         .image-container {
@@ -975,25 +1252,34 @@
             color: var(--text-primary);
         }
 
-        /* Right Panel - AI Reasoning */
+        /* Right Panel - AI Intelligence */
         .ai-reasoning-panel {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
-        /* Severity Card - Disabled State */
+        /* Severity Card - Premium Glass */
         .severity-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
             overflow: hidden;
-            transition: opacity 0.3s ease, filter 0.3s ease;
+            transition: all var(--motion-standard) var(--ease-smooth);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
 
         .severity-card.awaiting {
-            opacity: 0.6;
-            filter: grayscale(0.3);
+            opacity: 0.5;
+            filter: grayscale(0.4);
+        }
+
+        .severity-card.active {
+            opacity: 1;
+            filter: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
         }
 
         .severity-card.awaiting .severity-ring-container {
@@ -1038,7 +1324,7 @@
         }
 
         .severity-ring-progress.low {
-            stroke: #EAB308;
+            stroke: var(--color-review);
         }
 
         .severity-ring-progress.review {
@@ -1108,57 +1394,100 @@
             width: 0%;
         }
 
-        /* AI Explanation Card */
+        /* AI Explanation Card - Premium */
         .explanation-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
             overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
 
         .explanation-card.awaiting {
-            opacity: 0.6;
+            opacity: 0.5;
+            filter: grayscale(0.4);
+        }
+
+        .explanation-card.active {
+            opacity: 1;
+            filter: none;
         }
 
         .ai-explanation-list {
             padding: 12px 16px;
-            min-height: 80px;
+            min-height: 100px;
+            max-height: 280px;
+            overflow-y: auto;
         }
 
         .ai-explanation-list .empty-state {
             text-align: center;
             color: var(--text-tertiary);
             font-size: 12px;
-            padding: 20px 0;
+            padding: 28px 0;
         }
 
         .explanation-item {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 10px;
             font-size: 12px;
             color: var(--text-secondary);
             animation: fadeUp var(--motion-standard) var(--ease-smooth);
+            transition: background var(--motion-fast) var(--ease-smooth);
+        }
+
+        .explanation-item:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .explanation-item:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
         }
 
         .explanation-icon {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
             margin-top: 1px;
         }
 
-        /* AI Trace Section - Collapsed Default */
+        .explanation-content {
+            flex: 1;
+        }
+
+        .explanation-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .explanation-confidence {
+            font-size: 11px;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .explanation-reason {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* AI Trace Section - Collapsible Audit Panel */
         .trace-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
             overflow: hidden;
         }
 
@@ -1169,13 +1498,14 @@
             padding: 14px 16px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-secondary);
-            transition: background 0.15s ease;
+            transition: all var(--motion-fast) var(--ease-smooth);
         }
 
         .ai-trace-header:hover {
-            background: var(--bg-tertiary);
+            background: rgba(0, 0, 0, 0.02);
+            color: var(--text-primary);
         }
 
         .ai-trace-content {
@@ -1191,9 +1521,10 @@
         .trace-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            align-items: center;
+            padding: 10px 0;
             font-size: 11px;
-            border-bottom: 1px dashed var(--border-color);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .trace-row:last-child {
@@ -1202,12 +1533,16 @@
 
         .trace-label {
             color: var(--text-tertiary);
+            font-weight: 500;
         }
 
         .trace-value {
             color: var(--text-primary);
-            font-family: 'SF Mono', 'Monaco', monospace;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
             font-size: 10px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
         /* Image Wrapper */
@@ -2487,13 +2822,33 @@
                 </div>
             </div>
 
-            <!-- Audit Confidence Signal -->
-            <div class="audit-signal" id="auditSignal">
-                <svg class="audit-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                <span id="auditSignalText">100% of records are evidence-backed</span>
+            <!-- Dashboard Performance Footer -->
+            <div class="dashboard-footer" id="dashboardFooter">
+                <div class="footer-item">
+                    <svg class="footer-icon" width="14" height="14" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>Data Source: <strong>Live AI Engine</strong></span>
+                </div>
+                <div class="footer-divider"></div>
+                <div class="footer-item">
+                    <svg class="footer-icon" width="14" height="14" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Last updated: <strong id="lastUpdatedTime">—</strong></span>
+                </div>
+                <div class="footer-divider"></div>
+                <div class="footer-item">
+                    <span class="footer-latency-dot" id="footerLatencyDot"></span>
+                    <span>Latency: <strong id="footerLatency">—</strong></span>
+                </div>
+                <div class="footer-status" id="dashboardStatus">
+                    <span id="dashboardStatusText">System idle</span>
+                </div>
             </div>
         </section>
 
@@ -2937,6 +3292,19 @@
                 queueEl.textContent = data.queue_depth;
                 setTimeout(() => queueEl.classList.remove('updating'), 300);
 
+                // Update dashboard footer
+                const footerLatency = document.getElementById('footerLatency');
+                const footerDot = document.getElementById('footerLatencyDot');
+                const lastUpdated = document.getElementById('lastUpdatedTime');
+
+                if (footerLatency) {
+                    footerLatency.textContent = data.avg_latency_ms + ' ms';
+                    footerDot.classList.toggle('slow', parseFloat(data.avg_latency_ms) > 500);
+                }
+                if (lastUpdated) {
+                    lastUpdated.textContent = new Date().toLocaleTimeString();
+                }
+
             } catch (error) {
                 console.warn('System status fetch failed:', error);
                 document.getElementById('healthDot').classList.add('offline');
@@ -2944,7 +3312,7 @@
             }
         }
         fetchSystemStatus();
-        setInterval(fetchSystemStatus, 4000);
+        setInterval(fetchSystemStatus, 2500);
 
         // ===== REAL-TIME DASHBOARD UPDATES =====
         let dashboardPaused = false;
@@ -3248,9 +3616,11 @@
             document.getElementById('decisionReason').textContent = 'Upload an image to begin AI-powered damage inspection.';
 
             // Reset severity card to awaiting state
-            document.getElementById('severityCard').classList.add('awaiting');
+            const severityCard = document.getElementById('severityCard');
+            severityCard.classList.remove('active');
+            severityCard.classList.add('awaiting');
             document.getElementById('severityScore').textContent = '--';
-            document.getElementById('severityLabel').textContent = 'Waiting for analysis';
+            document.getElementById('severityLabel').textContent = 'Awaiting analysis';
             document.getElementById('severityRingProgress').style.strokeDashoffset = '377';
             document.getElementById('severityRingProgress').className = 'severity-ring-progress';
 
@@ -3259,7 +3629,9 @@
             document.getElementById('confidenceBar').style.width = '0%';
 
             // Reset explanation card to awaiting state
-            document.getElementById('explanationCard').classList.add('awaiting');
+            const explanationCard = document.getElementById('explanationCard');
+            explanationCard.classList.remove('active');
+            explanationCard.classList.add('awaiting');
             document.getElementById('explanationList').innerHTML = '<div class="empty-state">AI explanation will appear after inspection.</div>';
             document.getElementById('detectionCount').textContent = '0 found';
 
@@ -3367,9 +3739,13 @@
             state.currentDetections = result.detections;
             const decisionClass = result.decision.toLowerCase().replace('_required', '');
 
-            // Remove awaiting state from cards - results are now available
-            document.getElementById('severityCard').classList.remove('awaiting');
-            document.getElementById('explanationCard').classList.remove('awaiting');
+            // Activate cards - results are now available
+            const severityCard = document.getElementById('severityCard');
+            const explanationCard = document.getElementById('explanationCard');
+            severityCard.classList.remove('awaiting');
+            severityCard.classList.add('active');
+            explanationCard.classList.remove('awaiting');
+            explanationCard.classList.add('active');
 
             // Update severity ring animation
             updateSeverityRing(result.severity, result.severityLabel);
@@ -3460,6 +3836,11 @@
         // Generate explanation list from detections
         function generateExplanationList(detections, decision) {
             const list = document.getElementById('explanationList');
+            const card = document.getElementById('explanationCard');
+
+            // Activate the card
+            card.classList.remove('awaiting');
+            card.classList.add('active');
 
             if (!detections.length) {
                 list.innerHTML = `
@@ -3467,21 +3848,43 @@
                         <svg class="explanation-icon" fill="none" stroke="var(--color-success)" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        <span>No damaged regions found</span>
+                        <div class="explanation-content">
+                            <div class="explanation-label">No Damage Detected</div>
+                            <div class="explanation-reason">Package surface appears intact with no visible defects</div>
+                        </div>
                     </div>
                 `;
                 return;
             }
 
-            list.innerHTML = detections.map(d => {
-                const icon = d.name === 'intact'
-                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
-                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />';
-                const color = d.name === 'intact' ? 'var(--color-success)' : 'var(--color-warning)';
+            list.innerHTML = detections.map((d, idx) => {
+                const isDamaged = d.name !== 'intact' && d.name !== 'package';
+                const icon = isDamaged
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />';
+                const color = isDamaged ? 'var(--color-reject)' : 'var(--color-accept)';
+                const confPercent = Math.round(d.confidence * 100);
+                const severity = d.severity_level || (isDamaged ? 'MODERATE' : 'MINOR');
+
+                // Generate reason based on detection type
+                const reasonMap = {
+                    'damaged': 'Visible structural damage or deformation detected',
+                    'torn': 'Torn edge or tear pattern identified',
+                    'crushed': 'Crushed surface or compression damage',
+                    'wet': 'Water damage or moisture staining visible',
+                    'intact': 'Region shows no signs of damage',
+                    'package': 'Package structure detected'
+                };
+                const reason = reasonMap[d.name?.toLowerCase()] || 'Anomaly detected requiring inspection';
+
                 return `
-                    <div class="explanation-item" onmouseenter="highlightDetection(${d.id})" onmouseleave="unhighlightDetection()">
+                    <div class="explanation-item" onmouseenter="highlightDetection(${d.id || idx})" onmouseleave="unhighlightDetection()">
                         <svg class="explanation-icon" fill="none" stroke="${color}" viewBox="0 0 24 24">${icon}</svg>
-                        <span>Detected <strong>${d.name}</strong> region (${Math.round(d.confidence * 100)}% conf)</span>
+                        <div class="explanation-content">
+                            <div class="explanation-label">Region ${idx + 1}: ${d.name || 'Unknown'}</div>
+                            <div class="explanation-confidence">${confPercent}% confidence · ${severity}</div>
+                            <div class="explanation-reason">${reason}</div>
+                        </div>
                     </div>
                 `;
             }).join('');
