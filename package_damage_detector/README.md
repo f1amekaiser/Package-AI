@@ -14,6 +14,8 @@ This system provides real-time, AI-powered detection of visible damage on sealed
 - **Severity scoring** - Automated severity calculation with configurable thresholds
 - **Decision logic** - ACCEPT / REJECT / REVIEW_REQUIRED with operator override
 - **Tamper-proof evidence** - SHA-256 hash chain for integrity verification
+- **PostgreSQL database** - Production-ready with SQLite fallback for development
+- **Web dashboard** - Real-time monitoring and inspection history
 - **Offline operation** - Full functionality without network connectivity
 
 ## Project Structure
@@ -21,7 +23,7 @@ This system provides real-time, AI-powered detection of visible damage on sealed
 ```
 package_damage_detector/
 ├── config/
-│   ├── config.yaml          # Main configuration
+│   ├── config.yaml           # Main configuration
 │   └── damage.yaml           # YOLO dataset config
 ├── data/
 │   ├── images/               # Training images
@@ -32,15 +34,21 @@ package_damage_detector/
 │   │   ├── inference_engine.py   # YOLOv5/TensorRT inference
 │   │   ├── decision_engine.py    # Severity and decision logic
 │   │   └── evidence_manager.py   # Tamper-proof storage
+│   ├── db/
+│   │   ├── connection.py         # PostgreSQL/SQLite connection
+│   │   └── models.py             # SQLAlchemy models
 │   ├── services/
 │   │   ├── camera_manager.py     # Multi-camera control
 │   │   └── inspection_service.py # Orchestration
-│   └── utils/
-│       └── helpers.py            # Utility functions
+│   ├── ui/
+│   │   └── server.py             # Flask web dashboard
+│   └── api/
+│       └── routes.py             # FastAPI REST endpoints
 ├── models/                   # Trained model weights
 ├── evidence/                 # Stored inspection evidence
 ├── logs/                     # Application logs
 ├── main.py                   # Application entry point
+├── setup_postgresql.py       # Database setup script
 └── requirements.txt          # Python dependencies
 ```
 
@@ -50,26 +58,36 @@ package_damage_detector/
 
 ```bash
 cd package_damage_detector
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Train a Model
+### 2. Database Setup
+
+#### Option A: PostgreSQL (Recommended for Production)
 
 ```bash
-# From yolov5 directory
-python train.py \
-    --data ../package_damage_detector/config/damage.yaml \
-    --weights yolov5s.pt \
-    --epochs 100 \
-    --batch-size 16 \
-    --hyp ../package_damage_detector/data/hyps/hyp.damage.yaml
+# Install PostgreSQL (macOS)
+brew install postgresql@17
+brew services start postgresql@17
+
+# Create database and user
+python setup_postgresql.py --create-db --init-tables
 ```
 
-### 3. Copy Trained Weights
+#### Option B: SQLite (Development)
+
+No setup required - SQLite database is created automatically at `data/packageai.db`.
+
+### 3. Run Web Dashboard
 
 ```bash
-cp runs/train/exp/weights/best.pt ../package_damage_detector/models/damage_detector.pt
+source venv/bin/activate
+python -m src.ui.server
 ```
+
+Open http://localhost:5000 in your browser.
 
 ### 4. Run Demo Mode
 
@@ -83,6 +101,42 @@ python main.py --demo --single
 python main.py --demo --interval 3
 ```
 
+## Database Configuration
+
+The system supports both PostgreSQL (production) and SQLite (development).
+
+### Environment Variables
+
+```bash
+# Full connection URL
+export DATABASE_URL=postgresql://packageai:password@localhost:5432/packageai_db
+
+# Or individual settings
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export POSTGRES_DB=packageai_db
+export POSTGRES_USER=packageai
+export POSTGRES_PASSWORD=your_password
+```
+
+### Configuration File
+
+Edit `config/config.yaml`:
+
+```yaml
+database:
+  type: "postgresql"  # or "sqlite"
+  postgresql:
+    host: "localhost"
+    port: 5432
+    database: "packageai_db"
+    username: "packageai"
+    password: "packageai_secure_password"
+    pool:
+      max_size: 10
+      pool_timeout: 30
+```
+
 ## Configuration
 
 Edit `config/config.yaml` to customize:
@@ -90,6 +144,7 @@ Edit `config/config.yaml` to customize:
 - **Model settings** - Weights path, confidence threshold, device
 - **Camera settings** - Number of cameras, resolution, FPS
 - **Decision rules** - Severity thresholds, auto-reject rules
+- **Database settings** - PostgreSQL or SQLite configuration
 - **Evidence storage** - Retention period, hash chain settings
 
 ## Detection Classes
@@ -111,6 +166,27 @@ SEVERE (score ≥ 6.0)   → REJECT
 MODERATE (score ≥ 3.0) → REVIEW_REQUIRED
 MINOR (score < 3.0)    → ACCEPT (unless multiple)
 ```
+
+## API Endpoints
+
+### REST API (FastAPI)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | System health check |
+| GET | `/health/db` | Database health check |
+| GET | `/stats` | Inspection statistics |
+| POST | `/inspect?package_id=XXX` | Run inspection |
+| GET | `/evidence/{id}` | Get evidence record |
+
+### Web Dashboard
+
+| Route | Description |
+|-------|-------------|
+| `/` | Main dashboard with real-time stats |
+| `/api/stats` | JSON statistics |
+| `/api/history` | Inspection history |
+| `/api/health` | Health status |
 
 ## API Usage
 
@@ -139,6 +215,36 @@ print(f"Detections: {result.decision.total_detections}")
 | RAM | 4GB | 16GB |
 | Storage | 64GB SSD | 256GB NVMe |
 | Cameras | 2× 2MP | 5× 5MP |
+| Database | SQLite | PostgreSQL 17+ |
+
+## Development
+
+### Run Tests
+
+```bash
+pytest tests/ -v
+```
+
+### Code Formatting
+
+```bash
+black src/
+flake8 src/
+mypy src/
+```
+
+### Database Migrations
+
+```bash
+# Check connection
+python setup_postgresql.py --info
+
+# Initialize tables
+python setup_postgresql.py --init-tables
+
+# Reset database (caution!)
+python setup_postgresql.py --create-db --drop-existing
+```
 
 ## License
 
