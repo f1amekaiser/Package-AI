@@ -1,5 +1,43 @@
-# Database Package
-from .models import InspectionHistory, AuditLog, Detection, EvidenceMetadata, Base
-from .connection import get_db, engine, SessionLocal, get_db_session, init_db
+"""
+PackageAI Database Module
 
-__all__ = ['InspectionHistory', 'AuditLog', 'Detection', 'EvidenceMetadata', 'Base', 'get_db', 'engine', 'SessionLocal', 'get_db_session', 'init_db']
+Provides database connectivity, models, and utilities for
+the Package Damage Detection System.
+
+Supports PostgreSQL (production) with SQLite fallback (development).
+"""
+
+from .connection import (
+    engine,
+    SessionLocal,
+    init_db,
+    get_db,
+    get_db_session,
+    check_db_connection,
+    get_database_info
+)
+
+from .models import (
+    Base,
+    InspectionHistory,
+    Detection,
+    AuditLog,
+    EvidenceMetadata
+)
+
+__all__ = [
+    # Connection
+    'engine',
+    'SessionLocal',
+    'init_db',
+    'get_db',
+    'get_db_session',
+    'check_db_connection',
+    'get_database_info',
+    # Models
+    'Base',
+    'InspectionHistory',
+    'Detection',
+    'AuditLog',
+    'EvidenceMetadata'
+]

@@ -147,6 +147,45 @@ evidence:
   enable_hash_chain: true
 
 # =============================================================================
+# DATABASE CONFIGURATION (PostgreSQL)
+# =============================================================================
+database:
+  # Database type: "postgresql" or "sqlite"
+  type: "postgresql"
+  
+  # PostgreSQL connection settings
+  postgresql:
+    host: "localhost"
+    port: 5432
+    database: "packageai_db"
+    username: "packageai"
+    password: "packageai_secure_password"
+    
+    # Connection pool settings
+    pool:
+      min_size: 2
+      max_size: 10
+      max_overflow: 5
+      pool_timeout: 30
+      pool_recycle: 1800  # Recycle connections after 30 minutes
+      
+    # SSL settings (for production)
+    ssl:
+      enabled: false
+      ca_cert: ""  # Path to CA certificate
+      client_cert: ""
+      client_key: ""
+    
+    # Connection retry settings
+    retry:
+      max_attempts: 3
+      delay_seconds: 5
+  
+  # SQLite fallback (for development only)
+  sqlite:
+    path: "data/packageai.db"
+
+# =============================================================================
 # BACKEND SYNC CONFIGURATION
 # =============================================================================
 backend:

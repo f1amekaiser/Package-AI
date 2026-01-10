@@ -146,6 +146,24 @@ def create_api(
             model_loaded=model_loaded
         )
     
+    @app.get("/health/db", tags=["System"])
+    async def database_health():
+        """Check database connection health."""
+        try:
+            from ..db import check_db_connection, get_database_info
+            health = check_db_connection()
+            info = get_database_info()
+            return {
+                **health,
+                **info
+            }
+        except Exception as e:
+            return {
+                "status": "unhealthy",
+                "error": str(e),
+                "database_type": "unknown"
+            }
+    
     @app.get("/stats", response_model=StatsResponse, tags=["System"])
     async def get_stats():
         """Get system statistics."""
